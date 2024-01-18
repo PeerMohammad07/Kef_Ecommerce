@@ -1,0 +1,196 @@
+<%- include("../layouts/user/header.ejs") -%>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<style>
+	.otpcard{
+			margin-top: -7rem;
+			margin-bottom: -4rem;
+	}
+	.card {
+			width: 350px;
+			padding: 10px;
+			border-radius: 20px;
+			background: #fff;
+			border: none;
+			height: 350px;
+			position: relative;
+		}
+		
+		.containerr {
+			height: 100vh;
+		}	
+		.mobile-text {
+			color: #989696b8;
+			font-size: 15px;
+		}		
+		.form-control {
+			margin-right: 12px;
+		}	
+		.form-control:focus {
+			color: #495057;
+			background-color: #fff;
+			border-color: #ff8880;
+			outline: 0;
+			box-shadow: none;
+		}
+		.cursor {
+			cursor: pointer;
+		}
+		.time {
+			font-size: 1rem;
+			font-weight: bold;
+			color:#333;
+		}
+	</style>
+
+
+<div class="collapse navbar-collapse" id="navbarsFurni">
+	<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+		<li class="nav-item active">
+			<a class="nav-link" href="/">Home</a>
+		</li>
+		<li><a class="nav-link" href="shop.html">Shop</a></li>
+		<li><a class="nav-link" href="about.html">About us</a></li>
+		<li><a class="nav-link" href="services.html">Services</a></li>
+		<li><a class="nav-link" href="/blog">Blog</a></li>
+		<li><a class="nav-link" href="contact.html">Contact us</a></li>
+	</ul>
+
+	<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+		<li><a class="nav-link" href="/login"><img src="/static/images/user.svg"></a></li>
+		<li><a class="nav-link" href="cart.html"><img src="/static/images/cart.svg"></a></li>
+	</ul>
+</div>
+</div>	
+</nav>
+
+
+
+	<div class="d-flex justify-content-center align-items-center containerr pt-5 otpcard">
+			<div class="card py-5 px-3"> <% if (locals.message) { %>
+				<div class="alert alert-danger d-flex align-items-center" role="alert" id="existAlert">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img" aria-label="Warning:">
+							<path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+						</svg>
+						<div >
+								<strong>Hey !</strong>
+							<%= message %>
+							
+						</div>
+					</div>
+		<% } %>
+
+					<form id="verificationForm"  onsubmit="return validate()" method="post" action="">
+						
+						<% if(locals.email) { %>
+						<input type="hidden" name="email" value="<%= email %>">
+						<% } %>
+							<h5 class="m-0">E-mail verification</h5>
+							<%if(messages.incorrect) {%>
+
+								<div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img" aria-label="Warning:">
+										<path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+									</svg>
+									<div >
+											<strong>Hey !</strong>
+										<%=  messages.incorrect %>
+									</div>
+								</div>
+								
+							
+	
+						<%}%>
+							<span class="mobile-text">Enter the code we just sent to your Email <b class="text-danger"> <%= locals.email %> </b></span>
+							<div class="d-flex flex-row mt-5">
+									<input type="text" class="form-control" id="digit1" name="digit1" autofocus required>
+									<input type="text" class="form-control" id="digit2" name="digit2" required>
+									<input type="text" class="form-control" id="digit3" name="digit3" required>
+									<input type="text" class="form-control" id="digit4" name="digit4" required>
+							</div>
+							<button type="submit" class="btn btn-success d-block w-100 my-4">Submit</button>
+					</form>
+					<span class="time text-center" id="time"></span>
+					<div class="text-center ">
+							<span class="d-block mobile-text">Don't receive the code?</span>
+							<span class="font-weight-bold text-danger cursor" id="resend">Resend</span>						
+					</div>
+			</div>
+	</div>
+
+<!-- footer----footer -->
+	<footer class="footer-section">
+		<div class="container relative">
+			<div class="row g-5 mb-5">
+				<div class="col-lg-4">
+					<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
+					<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
+	
+					<ul class="list-unstyled custom-social">
+						<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
+						<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
+					</ul>
+				</div>
+	
+				<div class="col-lg-8">
+					<div class="row links-wrap">
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">About us</a></li>
+								<li><a href="#">Services</a></li>
+								<li><a href="#">Blog</a></li>
+								<li><a href="#">Contact us</a></li>
+							</ul>
+						</div>
+	
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Support</a></li>
+								<li><a href="#">Knowledge base</a></li>
+								<li><a href="#">Live chat</a></li>
+							</ul>
+						</div>
+	
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Jobs</a></li>
+								<li><a href="#">Our team</a></li>
+								<li><a href="#">Leadership</a></li>
+								<li><a href="#">Privacy Policy</a></li>
+							</ul>
+						</div>
+	
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Nordic Chair</a></li>
+								<li><a href="#">Kruzo Aero</a></li>
+								<li><a href="#">Ergonomic Chair</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+	
+			</div>
+	
+			<div class="border-top copyright">
+				<div class="row pt-4">
+					<div class="col-lg-6">
+						<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a hreff="https://themewagon.com">ThemeWagon</a>  <!-- License information: https://untree.co/license/ -->
+					</p>
+					</div>
+	
+					<div class="col-lg-6 text-center text-lg-end">
+						<ul class="list-unstyled d-inline-flex ms-auto">
+							<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+						</ul>
+					</div>
+	
+				</div>
+			</div>
+	
+		</div>
+	</footer>
+<script src="/static/js/admin/formValidation.js"></script>
+<%- include("../layouts/user/footer.ejs") -%>
