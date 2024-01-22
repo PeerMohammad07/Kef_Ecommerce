@@ -17,6 +17,25 @@ const userschema = new mongoose.Schema({
     type: String,
     required:true
   },
+  addresses:[
+    {
+      name :{
+      type:String,
+    },
+    state:{
+      type:String
+    },
+    country:{
+      type:String
+    },
+    pinNo:{
+      type:Number
+    },
+    phNo:{
+      type:Number
+    }
+    }   
+  ],
   is_admin :{
     type : Number,
     default:0

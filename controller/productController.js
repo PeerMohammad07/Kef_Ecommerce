@@ -203,7 +203,7 @@ const deleteProduct = async (req, res) => {
 }
 
 const loadShop = async (req, res) => {
-  let products
+  let products;
   let category = await Category.find({ isListed: false })
   try {
     let id = req.query.id
@@ -224,7 +224,6 @@ const productView = async (req, res) => {
     const productId = req.query.id
     const product = await Product.findById(productId).populate('category')
     const viewProduct = await Product.findById({ _id: productId })
-    console.log(viewProduct);
     const relatedProduct = await Product.find({
       category: viewProduct.category
       ,
@@ -232,7 +231,6 @@ const productView = async (req, res) => {
         $ne: viewProduct._id
       }
     })
-    console.log(relatedProduct);
     res.render('productDetails', { product, relatedProduct })
   } catch (error) {
     console.log(error.message);

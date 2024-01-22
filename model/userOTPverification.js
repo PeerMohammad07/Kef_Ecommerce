@@ -9,9 +9,10 @@ const userOtpVerificationSchema = mongoose.Schema({
     },
     createdAt :{
       type: Date,
-        default: Date.now,
+      default: Date.now
     }
 })
+userOtpVerificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 });
 
 const userVerification = mongoose.model('userOtpVerification',userOtpVerificationSchema)
 

@@ -1,36 +1,36 @@
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<OTP resend>>>>>>>>>>>>>>>>>>>>>>>>>>
-function resend(){
-  console.log("elo");
-  const change =  document.getElementById('resend');
-  change.style.color='green';
-  setTimeout(()=>{
-    change.style.color='';
-  },1000)
-}
 
-function resend(){
-  console.log("helo");
-  clearInterval(countdownInterval)
-  startCountdown(60)
-}
-let countdownInterval;
 
-  function startCountdown(initialValue){
-    let val = initialValue
-  countdownInterval = setInterval(()=>{
-      if(val==0){
+
+
+  function resend() {
+    console.log("Hello");
+    clearInterval(countdownInterval);
+    startCountdown(60);
+  }
+
+  let countdownInterval;
+
+  function startCountdown(initialValue) {
+    let val = initialValue;
+    countdownInterval = setInterval(() => {
+      if(val===0){
         clearInterval(countdownInterval)
       }
-       val = val-1
-       document.querySelector('time').innerHTML = `${val}`
-    },1000)
+      document.querySelector('#time').innerHTML = `${val}`;
+      val = val - 1;
+    }, 1000);
   }
-startCountdown(60)
+
+  startCountdown(60);
+
+  document.getElementById('resend').addEventListener('click', function () {
+    resend();
+  });
 
 
-document.getElementById('resend').onclick = function(){
-  resend()
-}
+
+
 
 // signupPage validation
 function validate(){

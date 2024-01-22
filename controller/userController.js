@@ -3,14 +3,15 @@ const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
 const userOtpVerification = require('../model/userOTPverification')
 const product = require('../model/productsModal')
-
+const Token = require('../model/tokenModal')
+const crypto = require('crypto')
 // loading Home
 const loadHome = async (req, res) => {
   try {
-    const id =req.session.user
-    const user = await User.findOne({_id:id})
+    const id = req.session.user
+    const user = await User.findOne({ _id: id })
     const productDetails = await product.find({})
-    res.render('home',{products:productDetails,user:user})
+    res.render('home', { products: productDetails, user: user })
   } catch (error) {
     console.log(error.message);
   }
@@ -28,7 +29,7 @@ const loadLogin = async (req, res) => {
 }
 
 
-const logout = async(req,res)=>{
+const logout = async (req, res) => {
   try {
     req.session.user = null
     res.redirect('/')
@@ -175,6 +176,10 @@ const verifyOtp = async (req, res) => {
         })
       }
     }
+    else {
+      req.flash('expire', 'OTP is expired')
+      res.redirect('/otp')
+    }
     const user = await User.findOne({ email: email })
     await userOtpVerification.deleteOne({ email: email })
     if (user.verified) {
@@ -240,7 +245,7 @@ const UserLogin = async (req, res) => {
       } else {
         console.log("user is not verified");
         req.flash('error', 'user is not found')
-      res.redirect('/login')
+        res.redirect('/login')
       }
 
     } else {
@@ -252,7 +257,7 @@ const UserLogin = async (req, res) => {
   }
 }
 
-const loadAbout = async(req,res)=>{
+const loadAbout = async (req, res) => {
   try {
     res.render('about')
   } catch (error) {
@@ -260,7 +265,7 @@ const loadAbout = async(req,res)=>{
   }
 }
 
-const loadBlog = async(req,res)=>{
+const loadBlog = async (req, res) => {
   try {
     res.render('blog')
   } catch (error) {
@@ -269,9 +274,151 @@ const loadBlog = async(req,res)=>{
 }
 
 
-const loadForgetPassword = async(req,res)=>{
+const loadForgetPassword = async (req, res) => {
   try {
     res.render('forgetPassword')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const resetPass = async (email, res) => {
+  try {
+    email = email;
+
+    const user = await User.findOne({ email: email })
+    if (!user) {
+      return res.status(400).send('user with this email is not existing')
+    }
+    let token = await Token.findOne({ userId: user._id })
+    if (!token) {
+      token = await new Token({ userId: user._id, Token: crypto.randomBytes(32).toString("hex") })
+      token.save()
+    }
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'peeru548@gmail.com',
+        pass: 'mxdh kfpy qfjy simq'
+      }
+    })
+
+    const resetPage = `http://localhost:3000/resetPassword/${user._id}/${token.Token}`
+
+    const mailOptions = {
+      from: 'peeru548@gmail.com',
+      to: email,
+      subject: 'verify your email',
+      html: `your reset password link is ${resetPage}`
+    }
+
+    await transporter.sendMail(mailOptions)
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const forgetPassword = async (req, res) => {
+  try {
+    const email = req.body.mail;
+    await resetPass(email, res)
+    req.flash('success', 'Sent a reset password link to your email')
+    res.redirect('/login')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const loadResetPass = async (req, res) => {
+  try {
+    const userid = req.params.id;
+    const token = req.params.token;
+    res.render('resetPassword', { userId: userid, token: token })
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+const resetPassword = async (req, res) => {
+  try {
+    const userid = req.body.userId;
+    const token = req.body.token;
+    confirmPassword = req.body.confirmpassword
+    console.log(userid);
+    const user = await User.findOne({ _id: userid })
+    console.log(user);
+    if (!user) {
+      return res.status(400).send('Invalid Link or expired')
+    }
+    const { email } = user;
+
+    const tok = await Token.findOne({ Token: token, userId: userid })
+
+    if (!tok) {
+      return res.status(400).send('Invalid Link or expired')
+    }
+
+    const securePass = await securePassword(confirmPassword)
+
+    await User.updateOne({
+      email: email
+    },
+      {
+        $set: {
+          password: securePass
+        }
+      })
+
+    req.flash('newsuccess', 'New Password added')
+    res.redirect('/login')
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const loadProfile = async (req, res) => {
+  try {
+    id = req.session.user._id;
+    const userData = await User.findOne({ _id: id })
+    res.render('profile', { user: userData })
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const addAddress = async (req, res) => {
+  try {
+    const email = req.query.email
+    const { name, state, country, pin, phone } = req.body;
+    await User.findOneAndUpdate({email:email},
+      {
+        $push:{
+          addresses:{
+            name :name,
+            state:state,
+            country:country,
+            pinNo: pin,
+            phNo:phone,
+          }
+        }
+      })
+      res.redirect('/profile')
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const editProfile = async(req,res)=>{
+  try {
+    const id = req.query.id
+    const user = await User.findOne({_id:id})
+    res.render('editProfile',{user:user})
   } catch (error) {
     console.log(error.message);
   }
@@ -288,6 +435,13 @@ module.exports = {
   logout,
   loadAbout,
   loadForgetPassword,
-  loadBlog
+  loadBlog,
+  forgetPassword,
+  loadResetPass,
+  resetPassword,
+  loadProfile,
+  addAddress,
+  editProfile
+
 
 }

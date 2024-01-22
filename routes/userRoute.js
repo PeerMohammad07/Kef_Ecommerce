@@ -5,6 +5,7 @@ const User = require("../model/userModel")
 const userController = require("../controller/userController")
 const auth = require('../middlewares/userAuth')
 const productController = require('../controller/productController')
+const cartController = require('../controller/cartController')
 //session
 const session = require("express-session")
 user_route.use(session({secret:config.sessionsecret,resave:false,saveUninitialized:false}))
@@ -24,7 +25,7 @@ user_route.set('views','./view/users')
 
 user_route.get('/',userController.loadHome)
 
-user_route.get('/login',auth.isLogin,userController.loadLogin)
+user_route.get('/login',userController.loadLogin)
 user_route.post('/login',userController.UserLogin)
 
 user_route.get('/logout',userController.logout)
@@ -42,8 +43,23 @@ user_route.get('/productView',productController.productView)
 user_route.get('/about',userController.loadAbout)
 
 user_route.get('/forgotPassword',userController.loadForgetPassword)
+user_route.post('/forgotPassword',userController.forgetPassword)
+
+user_route.get('/resetPassword/:id/:token',userController.loadResetPass)
+user_route.post('/resetPassword',userController.resetPassword)
 
 user_route.get('/blog',userController.loadBlog)
 
+user_route.post('/addToCart',cartController.addToCart)
+
+user_route.get('/cart',cartController.loadCart)
+
+user_route.post('/removeCart',cartController.removeCart)
+
+user_route.get('/profile',userController.loadProfile)
+
+user_route.post('/addAddress',userController.addAddress)
+
+user_route.get('/editProfile',userController.editProfile)
 module.exports = user_route;
 
