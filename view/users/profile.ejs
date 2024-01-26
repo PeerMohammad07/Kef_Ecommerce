@@ -13,8 +13,8 @@
           <li class="nav-item ">
             <a class="nav-link" href="/">Home</a>
           </li>
-          <li><a class="nav-link" href="">Whislist</a></li>
-          <li><a class="nav-link" href="">My Orders</a></li>
+          <li><a class="nav-link" href="/whishlist">Whislist</a></li>
+          <li><a class="nav-link" href="/myOrders">My Orders</a></li>
         </ul>
 
         <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -103,24 +103,10 @@
     <!-- End Hero Section -->
     <section style="background-color: #eee;">
       <div class="container py-5">
-
         <div class="container ">
           <div class="row">
             <div class="  col-lg-12 ">
               <div class="card mb-4 col-lg-4 m-auto">
-                <!-- <div class="card-body text-center">
-
-        <img src="{{obj.profile.url}}" alt="avatar"class="mt-4 img-fluid" style="width: 150px; height:200px;">
-
-        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-          class=" img-fluid" style="width: 150px;">
-
-        <h5 class="my-3"></h5>
-       
-        <div class="d-flex justify-content-center mb-2">
-
-        </div>
-      </div> -->
               </div>
             </div>
           </div>
@@ -160,28 +146,13 @@
                   </div>
                 </div>
                 <hr>
-                <!-- <div class="row">
-          <div class="col-sm-3">
-            <p class="mb-0">your wallet amount</p>
-          </div>
-          <div class="col-sm-9">
-            <p class="text-muted mb-0">₹{{wal.amount}}</p>
-          </div>
-        </div> -->
-                <!-- <hr>
-        <div class="row">
-          <div class="col-sm-3">
-            <p class="mb-0">my rferrel code</p>
-          </div>
-          <div class="col-sm-9">
-            <p class="text-muted mb-0">http://127.0.0.1:8000/usersignup/?ref={{obj.referral_link}}</p>
-          </div>
-        </div>
-        <hr> -->
+                <a href="/editprofile?id=<%= user._id %>"><button type="button" class="btn btn-primary mt-4">edit
+                    profile</button></a>
+                <a class="btn btn-primary mt-4" data-toggle="modal" data-target="#changePasswordModal"
+                  style="color: #eee;">Change Password</a>
 
 
-                <a href="/editprofile?id=<%= user._id %>"><button type="button" class="btn btn-primary mt-4">edit profile</button></a>
-                <a class="btn btn-primary mt-4 " href="">change password</a>
+
               </div>
             </div>
             <table class="table  table-bordered .custom-border table-striped table-hover">
@@ -212,16 +183,73 @@
                         <%= value.phNo %>
                       </td>
                       <td>
-                        <a href="/editaddressinuser/{{i.id}}" class="d-block text-dark text-decoration-none">Edit</a>
-                        <a href="#removeaddress{{i.id}}" class=" text-danger text-decoration-none"
+                        <!--edit address-->
+                        <a href="#" class="d-block text-dark text-decoration-none" data-toggle="modal"
+                          data-target="#editModal">Edit</a>
+                           <!--edit address-->
+                        <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog"
+                          aria-labelledby="editModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit Address</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <form>
+                                  <div class="form-group">
+                                    <label for="name">Name:</label>
+                                    <input type="text" class="form-control" id="editname" name="editName" required
+                                      placeholder="Enter your name">
+                                  </div>
+                                  <!-- Add other form fields here -->
+                                 
+                                  <div class="form-group">
+                                    <label for="state">State:</label>
+                                    <select class="form-control" id="editstate" name="editState">
+                                      <option value="Kerala">Kerala</option>
+                                      <option value="TamilNadu">Tamil Nadu</option>
+                                      <option value="Bengaluru">Bengaluru</option>
+                                      <option value="Goa">Goa</option>
+                                    </select>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="country">City:</label>
+                                    <input type="text" class="form-control" id="editcity" name="editcity" required
+                                      placeholder="Enter your Country">
+                                  </div>
+                                  <!-- Add more form fields as needed -->
+                                     <div class="form-group">
+                                    <label for="pin">Pin No:</label>
+                                    <input type="number" class="form-control" name="editpin" id="editpin" required
+                                      placeholder="Enter your pin number">
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="phone">Phone No:</label>
+                                    <input type="number" class="form-control" name="editphone" id="editphone" required
+                                      placeholder="Enter your phone number">
+                                  </div>
+                                  <button type="submit" class="btn btn-primary" onclick="editAddress('<%= user.email %>')" >Save Changes</button>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!--edit address-->
+
+
+                        <!--remove address-->
+                        <a href="#removeAddress" class=" text-danger text-decoration-none"
                           data-toggle="modal">Remove</a>
 
-                        <div id="removeaddress{{i.id}}" class="modal fade">
+                        <div id="removeAddress" class="modal fade">
 
                           <div class="modal-dialog">
                             <div class="modal-content">
-                              <form action="/removeaddress/{{i.id}}" method='POST'>
-                                {% csrf_token%}
+                              <form action="/removeAddress" method='POST'>
+                                <input type="hidden" name="id" value="<%= value._id %>">
                                 <div class="modal-header">
                                   <h4 class="modal-title">remove the address</h4>
                                   <button type="button" class="close" data-dismiss="modal"
@@ -239,7 +267,7 @@
                           </div>
 
                         </div>
-
+                        <!--remove address-->
                       </td>
                     </tr>
 
@@ -247,14 +275,14 @@
                       <%}%>
               </tbody>
             </table>
-            <a href="#" class="add" data-toggle="modal" data-target="#myModal">
-              <button class="btn btn-success"><span>Add address</span></button>
+            <a href="#addAddressModal" class="add" data-toggle="modal" data-target="#addAddressModal">
+              <button class="btn btn-success">Add address</button>
             </a>
           </div>
         </div>
 
         <!--Start Modal--->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="addAddressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
           aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -266,16 +294,11 @@
               </div>
               <div class="modal-body">
                 <!-- Form fields -->
-                <form action="/addAddress?email=<%=user.email%>" method="post">
+                <form>
                   <div class="form-group">
                     <label for="name">Name:</label>
                     <input type="text" class="form-control" id="name" name="name" required
                       placeholder="Enter your name">
-                  </div>
-                  <div class="form-group">
-                    <label for="name">Country:</label>
-                    <input type="text" class="form-control" id="Country" name="country" required
-                      placeholder="Enter your Country">
                   </div>
                   <div class="form-group">
                     <label for="state">state:</label>
@@ -288,26 +311,28 @@
                       <!-- Add more countries as needed -->
                     </select>
                   </div>
-
-                  <div class="form-group">
+                  <div class="form-group pt-1">
+                    <label for="city">City:</label>
+                    <input type="text" class="form-control" id="city" name="city" required
+                      placeholder="Enter your City">
+                  </div>
+                  <div class="form-group pt-1">
                     <label for="pin">Pin No:</label>
                     <input type="number" class="form-control" name="pin" id="pin" required
                       placeholder="Enter your pin number">
                   </div>
-                  <div class="form-group">
+                  <div class="form-group pt-1">
                     <label for="phone">Phone No:</label>
                     <input type="number" class="form-control" name="phone" id="phone" required
                       placeholder="Enter your phone number">
                   </div>
-                  <div class="text-center"> <button type="submit" class="btn btn-primary">Submit</button></div>
+                  <div class="text-center pt-4"> <button type="submit" class="btn btn-primary" onclick="addAddress('<%= user.email %>',event)">Submit</button></div>
                 </form>
               </div>
             </div>
           </div>
         </div>
         <!--End MOdal--->
-
-
       </div>
       </div>
     </section>
@@ -399,4 +424,230 @@
     </footer>
 
 
+    <!--change password modal start-->
+    <div class="modal" id="changePasswordModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Change Password</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Form for changing password -->
+            <form id="changePasswordForm" method="post">
+              <!-- Old Password -->
+              <span id="errormess" class="text-danger"></span>
+              <div class="form-group">
+                <label for="oldPassword">Current Password:</label>
+                <input type="password" class="form-control" required placeholder="Current Password"
+                  id="currentPassword">
+              </div>
+
+              <!-- New Password -->
+              <div class="form-group">
+                <label for="newPassword">New Password:</label>
+                <input type="password" class="form-control" required placeholder="New Password" id="newPassword">
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="form-group">
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" class="form-control" required placeholder="confirmPassword" id="confirmPassword">
+              </div>
+              <div class="text-danger" id="errormessage"></div>
+              <div class="text-success pb-2" id="successmessage"></div>
+              <!-- Submit Button -->
+              <div class="text-center">
+                <button type="button" class="btn btn-primary" onclick="changePassword()">Save</button>
+              </div>
+
+              <div></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--change password modal end-->
+
+<script>
+
+function clearInputValues() {
+        const fields = [
+            'name',
+            'state',
+            'city',
+            'state',
+            'pin',
+            'phone'
+        ];
+
+        for (const fieldId of fields) {
+            document.getElementById(fieldId).value = '';
+        }
+    }
+
+  function addAddress(email,event){
+    event.preventDefault();
+
+    const name = document.getElementById('name')
+    const state = document.getElementById('state')
+    const city = document.getElementById('city')
+    const pin = document.getElementById('pin')
+    const phone = document.getElementById('phone')
+
+    const data = {
+      name:name.value,
+      state:state.value,
+      city:city.value,
+      pin:pin.value,
+      phone:phone.value,
+      email:email
+    }
+    Swal.fire({
+      title:'Are you sure',
+      icon:'warning',
+      showCancelButton:true,
+      canelButtonColor:'#d33',
+      confirmButtonText:'Yes!',
+      confirmButtonColor:'#3085d6'
+    }).then((res)=>{
+      if(res.isConfirmed){
+        $.ajax({
+      url:'/addAddress',
+      method:'POST',
+      data:JSON.stringify(data),
+      contentType:'application/json',
+      success:function(response){
+        if(response.added==true){
+          Swal.fire({
+            icon:'success',
+            text:'success',
+          }).then(()=>{
+            location.reload()
+            clearInputValues()
+            $('#addressModal').modal('hide')
+          })
+        }else{
+          Swal.fire({
+            icon:'error',
+            text:'failed',
+          }).then(()=>{
+            location.reload()
+        })
+        }
+      }
+    })
+      }
+    })
+ return false
+  }
+</script>
+
+
+
+
+
+    <script>
+      function changePassword() {
+        const currentPassword = document.getElementById('currentPassword')
+        const newPassword = document.getElementById('newPassword')
+        const confirmPassword = document.getElementById('confirmPassword')
+
+        const errormess = document.getElementById('errormess')
+        if (currentPassword.value.trim() === '' || newPassword.value.trim() === '' || confirmPassword.value.trim() === '') {
+          errormess.textContent = 'fill all fields';
+          clearError(errormess, 2000)
+          return
+        } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(confirmPassword.value)) {
+          errormess.textContent = 'Password must be atleast 6 charcaters long and contain at least one uppercase letter one lowercase letter,and one number'
+          clearError(errormess, 2000)
+        }
+        function clearError(element, time) {
+          setTimeout(() => {
+            element.textContent = "";
+          }, time);
+        }
+        fetch('/changePassword', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            currentPassword: currentPassword.value,
+            newPassword: newPassword.value,
+            confirmPassword: confirmPassword.value
+          })
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        }).then((data) => {
+          const successmessagediv = document.getElementById('successmessage')
+          const errormessagediv = document.getElementById('errormessage')
+          if (data.success) {
+            successmessagediv.textContent = data.message;
+            errormessagediv.textContent = '';
+            document.getElementById('changePasswordForm').reset();
+            $('#changePasswordModal').modal('hide');
+            $('.modal-backdrop').remove();
+            location.reload();
+          } else {
+            successmessagediv.textContent = '';
+            errormessagediv.textContent = data.message;
+          }
+        })
+
+
+      }
+    </script>
+
+
+<script>
+  function editAddress(email){
+    const editname = document.getElementById('editname')
+    const editstate = document.getElementById('editstate')
+    const editcity = document.getElementById('editcity')
+    const editpin = document.getElementById('editpin')
+    const editphone = document.getElementById('editphone')
+
+    const data ={
+      editname:editname,
+      editstate:editstate,
+      editcity:editcity,
+      editpin:editpin,
+      editphone:editphone,
+      email:email
+    }
+    $.ajax({
+      url:'/editAddress',
+      method:'POST',
+      data:JSON.stringify(data),
+      contentType:'application/json',
+      success:function(response){
+        if(response.edited==true){
+          Swal.fire({
+            icon:'success',
+            text:'success',
+          }).then(()=>{
+            location.reload()
+            $('#editAddressModal').modal('hide')
+        })
+        }else{
+          Swal.fire({
+            icon:'error',
+            text:'edit address failed'
+          }).then(()=>{
+            location.reload()
+          })
+        }
+      }
+    })
+
+
+
+  }
+</script>
     <%- include('../layouts/user/footer.ejs') -%>

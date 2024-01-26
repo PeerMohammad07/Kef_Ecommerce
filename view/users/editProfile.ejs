@@ -1,1 +1,99 @@
-<h1>Helo</h1>
+<%- include("../layouts/user/header.ejs") -%>
+<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark " arial-label="Furni navigation bar">
+
+  <div class="container">
+    <a class="navbar-brand" href="/">KEF<span>.</span></a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+      aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarsFurni">
+      <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+        <li class="nav-item ">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li><a class="nav-link" href="">Whislist</a></li>
+        <li><a class="nav-link" href="">My Orders</a></li>
+      </ul>
+
+      <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+
+        <%if(locals.user){ %>
+          <div class="dropdown show">
+            <a class="btn  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <img src="/static/images/user.svg">
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item text-light" href="/logout">Logout</a>
+              <a class="dropdown-item text-light" href="/profile">Profile</a>
+              <!-- <a class="dropdown-item" href="#"></a> -->
+            </div>
+          </div>
+          <%} else{%>
+            <li><a class="nav-link" href="/login"><img src="/static/images/user.svg"></a></li>
+            <%}%>
+              <li><a class="nav-link" href="/cart"><img src="/static/images/cart.svg"></a></li>
+      </ul>
+    </div>
+  </div>
+
+</nav>
+
+<div class="container">
+  <section class="d-flex justify-content-center align-items-center p-4">
+    <div class="col col-md-8 col-lg-6 col-xxl-5">
+      <div class="shadow-xl p-4 p-lg-5 bg-white">
+        <h1 class="text-center fw-bold mb-5 fs-2">Edit Profile</h1>
+
+    
+        <form action="" method="post" onsubmit="return validate()">
+        
+        <input type="hidden" name="id" value="<%= user._id %>">
+        <span id="err" class="text-danger"></span>
+          <div class="form-group">
+              <label for="name">Name:</label>
+              <input type="text" class="form-control" id="name" name="editname"  value="<%= user.name %>"  placeholder="Enter your name">
+            </div>
+          <div class="form-group">
+            <label for="phone" >Phone:</label>
+            <input type="text" class="form-control" id="phone" name="editphone"  value="<%= user.mobile %>"  placeholder="Enter Phone">
+           
+          </div>
+
+         
+              <div class="mt-4"> <button type="submit" class="btn btn-primary ">Update</button>
+                  <a href="/profile" class="btn btn-primary">
+                      <span class="text" >Back</span>
+                    </a></div>
+         
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  function validate(){
+    const name = document.getElementById('name')
+    const phone = document.getElementById('phone')
+    let errormessage = document.getElementById('err')
+    if(!/^\w+$/.test(name.value)){
+      errormessage.textContent = "only allow letters numbers and underscores";
+      setTimeout(()=>{
+        errormessage.textContent =''
+      },2000)
+      return false
+    }else if(phone.value.trim().length < 10 || !/^\d+$/.test(phone.value)){
+      errormessage.textContent = "Mobile number should be an Number with  10 digits"
+      setTimeout(()=>{
+        errormessage.textContent =''
+      },2000)
+      return false
+    }else{
+      return true
+    }
+  }
+</script>
+<%- include("../layouts/user/footer.ejs") -%>

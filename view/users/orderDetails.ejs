@@ -1,0 +1,202 @@
+<%- include("../layouts/user/header.ejs") -%>
+<style>
+  .order {
+      text-align: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+  }
+
+  .order-details {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      text-align: left;
+      max-width: 600px;
+      margin: 0 auto;
+  }
+
+  .order-details h2 {
+      color: #333;
+  }
+
+  .detail-item {
+      margin-bottom: 10px;
+  }
+</style>
+<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark " arial-label="Furni navigation bar">
+
+  <div class="container">
+    <a class="navbar-brand" href="/">KEF<span>.</span></a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+      aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarsFurni">
+      <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+        <li class="nav-item ">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li><a class="nav-link" href="/shop">Shop</a></li>
+        <li><a class="nav-link" href="/contact">Contact us</a></li>
+      </ul>
+
+      <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+
+        <%if(locals.user){ %>
+          <div class="dropdown show">
+            <a class="btn  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <img src="/static/images/user.svg">
+            </a>
+
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item text-light" href="/logout">Logout</a>
+              <a class="dropdown-item text-light" href="/profile">Profile</a>
+              <!-- <a class="dropdown-item" href="#"></a> -->
+            </div>
+          </div>
+          <%} else{%>
+            <li><a class="nav-link" href="/login"><img src="/static/images/user.svg"></a></li>
+            <%}%>
+              <li><a class="nav-link" href="/cart"><img src="/static/images/cart.svg"></a></li>
+      </ul>
+    </div>
+  </div>
+
+</nav>
+
+<div class="order">
+  <div class="order-details  text-center">
+    <h2>Order Details</h2>
+    <div class="detail-item  text-center">
+        <strong>Order ID:</strong> <span><%= orderDetails._id %></span>
+    </div>
+    <% orderDetails.products.forEach((product)=>{%>
+    <div class="detail-item  text-center">
+        <strong>Product Details:</strong> <span><%= product.productId.name %></span>
+    </div>
+    <div class="detail-item  text-center">
+        <strong>Product Quantity:</strong> <span><%= product.quantity %></span>
+    </div>
+    <% }) %>
+    <div class="detail-item  text-center">
+        <!-- <strong>Placed On:</strong> <span></span> -->
+    </div>
+    <div class="detail-item  text-center">
+        <strong>Payment Method:</strong> <span><%= orderDetails.paymentMethod %></span>
+    </div>
+    <div class="detail-item  text-center">
+        <strong>Total Amount:</strong> <span><%= orderDetails.totalAmount %></span>
+    </div>
+    <div class="detail-item  text-center">
+      <strong>Address:</strong> <span><%= orderDetails.deliveryAddress.state %>,<%= orderDetails.deliveryAddress.city %>,<%= orderDetails.deliveryAddress.pinNo %>,<%= orderDetails.deliveryAddress.phNo %></span>
+  </div>
+</div>
+</div>
+
+
+<footer class="footer-section">
+	<div class="container relative">
+
+		<div class="sofa-img">
+			<img src="/static/images/sofa.png" alt="Image" class="img-fluid">
+		</div>
+
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="subscription-form">
+					<h3 class="d-flex align-items-center"><span class="me-1"><img src="/static/images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
+
+					<form action="#" class="row g-3">
+						<div class="col-auto">
+							<input type="text" class="form-control" placeholder="Enter your name">
+						</div>
+						<div class="col-auto">
+							<input type="email" class="form-control" placeholder="Enter your email">
+						</div>
+						<div class="col-auto">
+							<button class="btn btn-primary">
+								<span class="fa fa-paper-plane"></span>
+							</button>
+						</div>
+					</form>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="row g-5 mb-5">
+			<div class="col-lg-4">
+				<div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
+				<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
+
+				<ul class="list-unstyled custom-social">
+					<li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
+					<li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
+					<li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
+					<li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
+				</ul>
+			</div>
+
+			<div class="col-lg-8">
+				<div class="row links-wrap">
+					<div class="col-6 col-sm-6 col-md-3">
+						<ul class="list-unstyled">
+							<li><a href="#">About us</a></li>
+							<li><a href="#">Services</a></li>
+							<li><a href="#">Blog</a></li>
+							<li><a href="#">Contact us</a></li>
+						</ul>
+					</div>
+
+					<div class="col-6 col-sm-6 col-md-3">
+						<ul class="list-unstyled">
+							<li><a href="#">Support</a></li>
+							<li><a href="#">Knowledge base</a></li>
+							<li><a href="#">Live chat</a></li>
+						</ul>
+					</div>
+
+					<div class="col-6 col-sm-6 col-md-3">
+						<ul class="list-unstyled">
+							<li><a href="#">Jobs</a></li>
+							<li><a href="#">Our team</a></li>
+							<li><a href="#">Leadership</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+						</ul>
+					</div>
+
+					<div class="col-6 col-sm-6 col-md-3">
+						<ul class="list-unstyled">
+							<li><a href="#">Nordic Chair</a></li>
+							<li><a href="#">Kruzo Aero</a></li>
+							<li><a href="#">Ergonomic Chair</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="border-top copyright">
+			<div class="row pt-4">
+				<div class="col-lg-6">
+					<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a hreff="https://themewagon.com">ThemeWagon</a>  <!-- License information: https://untree.co/license/ -->
+				</p>
+				</div>
+
+				<div class="col-lg-6 text-center text-lg-end">
+					<ul class="list-unstyled d-inline-flex ms-auto">
+						<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+						<li><a href="#">Privacy Policy</a></li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+</footer>
+<%- include("../layouts/user/footer.ejs") -%>

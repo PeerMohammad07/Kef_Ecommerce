@@ -27,16 +27,7 @@ const cartSchema = mongoose.Schema({
         totalPrice: {
           type: Number,
           default: 0
-        },
-        status: {
-          type: String,
-          default: "placed"
-        },
-        cancelReason: {
-          type: String,
-          default: "none"
         }
-      
     }
 
   ]

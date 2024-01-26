@@ -1,5 +1,6 @@
 const Category = require('../model/categoryModal')
 const Product = require('../model/productsModal')
+const Cart = require('../model/cartModal')
 const Sharp = require('sharp')
 
 const loadProduct = async (req, res) => {
@@ -70,7 +71,7 @@ const addProduct = async (req, res) => {
         price: details.price,
         category: details.category,
         description: details.description,
-        quantity: details.quantity,
+        stock : details.quantity,
         images: arrimages
       })
       await product.save()
@@ -144,7 +145,7 @@ const editProduct = async (req, res) => {
           name: newname,
           previous_price: newprevious_price,
           price: newprice,
-          quantity: newquantity,
+          stock: newquantity,
           category: newcategory,
           description: newdescription,
         }

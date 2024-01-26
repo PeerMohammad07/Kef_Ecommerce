@@ -6,6 +6,7 @@ const userController = require("../controller/userController")
 const auth = require('../middlewares/userAuth')
 const productController = require('../controller/productController')
 const cartController = require('../controller/cartController')
+const orderController = require('../controller/orderController')
 //session
 const session = require("express-session")
 user_route.use(session({secret:config.sessionsecret,resave:false,saveUninitialized:false}))
@@ -56,10 +57,23 @@ user_route.get('/cart',cartController.loadCart)
 
 user_route.post('/removeCart',cartController.removeCart)
 
+user_route.get('/checkout',userController.loadCheckout)
+
+user_route.post('/placeOrder',orderController.placeOrder)
+
+//Profile Section
 user_route.get('/profile',userController.loadProfile)
-
 user_route.post('/addAddress',userController.addAddress)
+// user_route.post('/editAddress',userController.editAddress)
+user_route.get('/editProfile',userController.loadeditProfile)
+user_route.post('/editProfile',userController.editProfile)
+user_route.post('/changePassword',userController.changePassword)
+user_route.post('/removeAddress',userController.removeAddress)
 
-user_route.get('/editProfile',userController.editProfile)
+user_route.get('/orderSuccess/:id',orderController.loadOrderSuccess)
+
+user_route.get('/orderDetails',orderController.orderDetails)
+
+user_route.get('/myOrders',orderController.loadMyOrder)
 module.exports = user_route;
 

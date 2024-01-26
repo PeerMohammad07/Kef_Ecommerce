@@ -1,4 +1,5 @@
 const User = require('../model/userModel')
+const Cart = require('../model/cartModal')
 const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
 const userOtpVerification = require('../model/userOTPverification')
@@ -189,7 +190,7 @@ const verifyOtp = async (req, res) => {
           name: user.name,
           email: user.email
         }
-        res.redirect('/')
+        res.redirect('/login')
       } else {
         console.log("user blocked from this site");
 
@@ -388,41 +389,175 @@ const loadProfile = async (req, res) => {
     const userData = await User.findOne({ _id: id })
     res.render('profile', { user: userData })
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 }
 
 const addAddress = async (req, res) => {
   try {
-    const email = req.query.email
-    const { name, state, country, pin, phone } = req.body;
-    await User.findOneAndUpdate({email:email},
+    const {
+      name,
+      state,
+      city,
+      pin,
+      phone,
+      email
+    } = req.body;
+    console.log(email);
+    await User.findOneAndUpdate({ email: email },
       {
-        $push:{
-          addresses:{
-            name :name,
-            state:state,
-            country:country,
+        $push: {
+          addresses: {
+            name: name,
+            state: state,
+            city: city,
             pinNo: pin,
-            phNo:phone,
+            phNo: phone,
           }
         }
       })
-      res.redirect('/profile')
+    res.json({ added: true })
   } catch (error) {
     console.log(error);
   }
 }
 
-const editProfile = async(req,res)=>{
+
+//editAddress
+// const editAddress = async (req, res) => {
+//   try {
+//     const { editname,
+//       editstate,
+//       editcity,
+//       editpin,
+//       editphone,
+//       email } = req.body;
+//       await User.findOneAndUpdate({
+//         email:email
+//       },{
+
+//       })
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+
+
+
+
+
+
+
+
+const loadeditProfile = async (req, res) => {
   try {
     const id = req.query.id
-    const user = await User.findOne({_id:id})
-    res.render('editProfile',{user:user})
+    const user = await User.findOne({ _id: id })
+    res.render('editProfile', { user: user })
   } catch (error) {
     console.log(error.message);
   }
 }
+
+const editProfile = async (req, res) => {
+  try {
+    const { id, editname, editphone } = req.body;
+    await User.findByIdAndUpdate({ _id: id }, { name: editname, mobile: editphone })
+    res.redirect('/profile')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const changePassword = async (req, res) => {
+  const currentPassword = req.body.currentPassword;
+  const newPassword = req.body.newPassword;
+  const confirmPassword = req.body.confirmPassword;
+  const userId = req.session.user._id;
+  try {
+    console.log("worked");
+    //find by user id
+    const user = await User.findById(userId)
+
+    //no user
+    if (!user) {
+      console.log("no user");
+      return res.status(404).json({ 'error': 'User not found' })
+    }
+
+    if (currentPassword == confirmPassword) {
+      return res.json({ message: 'current password and new password ' })
+    }
+
+    //pass and confpass not eq
+    if (newPassword != confirmPassword) {
+      console.log("pass not match");
+      return res.json({ message: 'New password and confirm password do not match' })
+    }
+
+    //passmatch
+    const matchPassword = await bcrypt.compare(currentPassword, user.password)
+
+    //hash pass
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(confirmPassword, saltRounds)
+
+    //save pass
+    if (matchPassword) {
+      console.log("updated");
+      await User.findOneAndUpdate({ email: user.email },
+        {
+          $set:
+            { password: hashedPassword }
+        },
+        { new: true }
+      )
+      return res.status(200).json({ success: true, message: 'Password updated successfully.' });
+    }
+    //curent pass is wrong
+    else {
+      return res.json({ message: 'Current password is wrong' })
+    }
+  }
+  catch (error) {
+    console.log(error.message)
+  }
+}
+
+
+const removeAddress = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const addressId = req.body.id
+    console.log("helo");
+    await User.findByIdAndUpdate({ _id: userId },
+      {
+        $pull: {
+          addresses: {
+            _id: addressId
+          }
+        }
+      })
+    res.redirect('/profile')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
+const loadCheckout = async (req, res) => {
+  try {
+    const userid = req.session.user._id
+    const user = await User.findOne({_id:userid})
+    const cart = await Cart.findOne({userId:userid}).populate('products.productId')
+    res.render('checkout',{user:user,cart:cart.products})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 
 module.exports = {
   insertUser,
@@ -441,7 +576,9 @@ module.exports = {
   resetPassword,
   loadProfile,
   addAddress,
-  editProfile
-
-
+  loadeditProfile,
+  editProfile,
+  changePassword,
+  removeAddress,
+  loadCheckout,
 }

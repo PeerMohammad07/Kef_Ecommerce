@@ -25,7 +25,7 @@ const userschema = new mongoose.Schema({
     state:{
       type:String
     },
-    country:{
+    city:{
       type:String
     },
     pinNo:{
