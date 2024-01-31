@@ -1,6 +1,7 @@
 const User = require('../model/userModel')
 const Product = require('../model/productsModal')
 const Cart = require('../model/cartModal')
+const { productView } = require('./productController')
 
 
 const addToCart = async (req, res) => {
@@ -9,7 +10,7 @@ const addToCart = async (req, res) => {
       return res.json({ login: true, message: 'please login and continuing shopiing' })
     } else {
       const userid = req.session.user._id
-      const { productQuantity, productId } = req.body
+      const { productQuantity, productId } = req.body;
       const product = await Product.findOne({ _id: productId })
       const cart = await Cart.findOne({ userId: userid })
       if (cart) {
@@ -89,11 +90,40 @@ const removeCart = async (req,res)=>{
   }
 }
 
+const updateQuantity = async(req,res)=>{
+  const {productId,count}= req.body;
+  const product = await Product.findOne({_id:productId})
+  const userid = req.session.user._id;
+  const cart = await Cart.findOne({userId:userid})
+  if(count == -1){
+    const currentQuantity = cart.products.find((p)=> p.productId == productId).quantity
+    if(currentQuantity<=1){
+     return res.json({min:true})
+    }
+  }
+  if(count==1){
+    const currentQuantity = cart.products.find((prod)=> prod.productId == productId).quantity
+    if(currentQuantity >= product.stock){
+     return res.json({max:true})
+    }
+  }
+  const producPrice = cart.products.find((prod)=> prod.productId.toString() == productId)
 
+  await Cart.findOneAndUpdate({userId:userid,'products.productId':productId},
+  {$inc:
+    {
+      'products.$.quantity':count,
+      'products.$.totalPrice': count * producPrice.productPrice
+  }}
+  )
+  res.json({success:true})
+}
 
+   
 module.exports = {
   addToCart,
   loadCart,
-  removeCart
+  removeCart,
+  updateQuantity
 
 }

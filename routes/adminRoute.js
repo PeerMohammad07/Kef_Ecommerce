@@ -19,14 +19,14 @@ admin_route.get('/dashboard',adminAuth.isLogout,adminController.loadDashboard)
 
 
 //user
-admin_route.get('/userms',adminController.userManagementsystem)
+admin_route.get('/userms',adminAuth.isLogout,adminController.userManagementsystem)
 admin_route.post('/listuser',productController.listUnlist)
 admin_route.post('/blockUser',adminController.blockUser)
 
 
 
 //Products
-admin_route.get('/products',productController.loadProduct)
+admin_route.get('/products',adminAuth.isLogout,productController.loadProduct)
 admin_route.get('/addProduct',productController.loadaddProduct)
 admin_route.post('/addProduct',multer.array('images'),productController.addProduct)
 admin_route.get('/edit-product',productController.editProductLoad)
@@ -35,7 +35,7 @@ admin_route.post('/deleteProduct',productController.deleteProduct)
 
 
 // Category 
-admin_route.get('/categories',categoryController.loadCategory)
+admin_route.get('/categories',adminAuth.isLogout,categoryController.loadCategory)
 admin_route.post('/categories',categoryController.insertCategory)
 admin_route.get('/addCategory',categoryController.loadaddCategory)
 admin_route.post('/addCategory',categoryController.addCategory)
@@ -43,4 +43,10 @@ admin_route.get('/editCategory',categoryController.loadeditCategory)
 admin_route.post('/editCategory',categoryController.editCategory)
 admin_route.post('/list-Unlist',categoryController.listUnlistCategory)
 
+
+
+admin_route.get('/orders',adminAuth.isLogout,adminController.loadOrder)
+admin_route.get('/singleOrderDetails',adminController.singleProductView)
+admin_route.post('/changeOrderStatus',adminController.changeOrderStatus)
+admin_route.post('/cancelOrder',adminController.cancelOrder)
 module.exports = admin_route;

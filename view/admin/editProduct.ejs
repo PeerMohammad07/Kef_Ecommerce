@@ -161,7 +161,7 @@
                   </div>
                   <div class="form-group">
                     <label for="quantity">Quantity</label>
-                    <input type="number" value="<%= product.quantity %>" class="form-control" id="quantity"
+                    <input type="number" value="<%= product.stock %>" class="form-control" id="quantity"
                       name="quantity" placeholder="Type here">
                   </div>
 
@@ -286,10 +286,10 @@
             else if (!Number.isInteger(Number(price))) {
                 alert('Price must be an integer');
                 return false;
-            } else if (Number(quantity) <= 0) {
+            } else if (Number(quantity) < 0) {
                 alert('Quantity must be a positive number');
                 return false;
-            }else if (Number(price) <= 0) {
+            }else if (Number(price) < 0) {
                 alert('Price must be a positive number');
                 return false;
             }

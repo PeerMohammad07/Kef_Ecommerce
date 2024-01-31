@@ -28,7 +28,7 @@ const orderSchema = mongoose.Schema({
       },
       status :{
         type:String,
-        enum: ['placed', 'Outofdelivery', 'shipped', 'delivered'],
+        enum: ['placed', 'outForDelivery', 'shipped', 'delivered','cancelled'],
         default:'placed'
       },
       quantity :{
@@ -59,7 +59,8 @@ const orderSchema = mongoose.Schema({
     required:true
   },
   deliveryAddress:{
-    type:Object
+    type:Object,
+    required:true
   }
 })
 

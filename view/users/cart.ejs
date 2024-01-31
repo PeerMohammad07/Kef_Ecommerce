@@ -74,13 +74,15 @@
     </div>
 
   </nav>
+  <div  id="reloadDiv">
+   <% let Subtotal = 0 %> 
   <% if(cartDetails && cartDetails.products && cartDetails.products.length > 0){%>
       <div class="untree_co-section before-footer-section">
         <div class="container">
           <div class="row mb-5">
             <form class="col-md-12" method="post">
               <div class="site-blocks-table">
-                <table class="table">
+                <table class="table" >
                   <thead>
                     <tr>
                       <th class="product-thumbnail">Image</th>
@@ -94,6 +96,7 @@
                   <tbody>
                    
                       <% cartDetails.products.forEach((value,index)=>{%>
+                        
                     <tr>
                       <td class="product-thumbnail">
                         <img src="/assets/product/sharpedproduct/<%= value.productId.images[0] %>" alt="Image" class="img-fluid">
@@ -105,20 +108,24 @@
                       </td>
                       <td><%= value.productId.price %></td>
                       <td>
-                        <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                          <div class="input-group-prepend">
-                            <button class="btn btn-outline-black decrease" type="button" onclick="decrementValue()">−</button>
-                          </div>
-                          <input type="text" class="form-control text-center quantity-amount" readonly value="<%= value.quantity %>" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                          <div class="input-group-append">
-                            <button class="btn btn-outline-black increase" type="button" onclick="incrementValue()">+</button>
-                          </div>
-                        </div>
+                        <div class="cart-product-quantity" style="display: flex; align-items: center;">
+                          <button class="quantity-control" type="button" onclick="IncDecValue('<%= value.productId._id %>', -1)" style="background-color: transparent;color: black;">-</button>
+                          
+                          <input type="number" class="form-control" value="<%= value.quantity %>" min="1" max="10"
+                              step="1" data-decimals="0" disabled required style="text-align: center; width: 60px;">
+                          
+                          <button class="quantity-control" type="button" onclick="IncDecValue('<%= value.productId._id %>', 1)" style="background-color: transparent; color: black;">+</button>
+                      </div>
+                      
+                      
+                      
 
                       </td>
                       <td><%= value.totalPrice %></td>
                       <td><a onclick="deleteCart('<%= value.productId._id %>')" class="btn btn-black btn-sm">X</a></td>
                     </tr>
+                    <%  Subtotal = Subtotal + value.totalPrice %>
+
                     <% }) %>
                    
                   </tbody>
@@ -166,7 +173,7 @@
                       <span class="text-black">Subtotal</span>
                     </div>
                     <div class="col-md-6 text-right">
-                      <strong class="text-black">$230.00</strong>
+                      <strong class="text-black">₹<%= Subtotal %></strong>
                     </div>
                   </div>
                   <div class="row mb-5">
@@ -174,7 +181,7 @@
                       <span class="text-black">Total</span>
                     </div>
                     <div class="col-md-6 text-right">
-                      <strong class="text-black">$230.00</strong>
+                      <strong class="text-black">₹<%= Subtotal %></strong>
                     </div>
                   </div>
 
@@ -200,7 +207,7 @@
           </div>
         </div>
         <%}%>
-       
+      </div>
           <!-- Start Footer Section -->
           <footer class="footer-section">
             <div class="container relative">
@@ -347,8 +354,33 @@
       }
     })
   }
-
-
 </script>
+<script>
+function IncDecValue(productId,count){
+  const data = {productId,count}
+  $.ajax({
+    url:'/updateQuantity',
+    method:'POST',
+    data:JSON.stringify(data),
+    contentType:'application/json',
+    success:function(response){
+      if(response.success){
+        $('#reloadDiv').load('/cart #reloadDiv')
+      }else if(response.min){
+        Swal.fire({
+          icon:'warning',
+          text:'minimum stock reached'
+        })
+      }else if(response.max){
+        Swal.fire({
+          icon:'warning',
+          text:'maximumu stock reached'
+        })
+      }else{
 
-          <%- include("../layouts/user/footer.ejs") -%>
+      }
+    }
+  })
+}
+</script>
+<%- include("../layouts/user/footer.ejs") -%>

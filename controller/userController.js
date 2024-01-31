@@ -154,14 +154,13 @@ const verifyOtp = async (req, res) => {
   try {
     const email = req.body.email
     const otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
-
     const userVerification = await userOtpVerification.findOne({ email: email })
 
     if (!userVerification) {
-      req.flash('message', 'otp expired')
-      res.redirect('/signup')
-
+      req.flash('message', 'User verification data not found');
+      res.redirect(`/otp?email=${email}`);
       return;
+
     }
     const { otp: hashedOtp } = userVerification;
     const validOtp = await bcrypt.compare(otp, hashedOtp)
@@ -178,8 +177,8 @@ const verifyOtp = async (req, res) => {
       }
     }
     else {
-      req.flash('expire', 'OTP is expired')
-      res.redirect('/otp')
+      req.flash('expire', 'Incorrect otp')
+      res.redirect(`/otp?email=${email}`)
     }
     const user = await User.findOne({ email: email })
     await userOtpVerification.deleteOne({ email: email })
@@ -201,10 +200,8 @@ const verifyOtp = async (req, res) => {
       }
     } else {
       console.log("otp incorrect else worked")
-
       req.flash('incorrect', 'otp is incorrect');
       res.redirect(`/otp?email=${email}`)
-
     }
   }
   catch (error) {
@@ -486,7 +483,7 @@ const changePassword = async (req, res) => {
     }
 
     if (currentPassword == confirmPassword) {
-      return res.json({ message: 'current password and new password ' })
+      return res.json({ message: 'current password and new password are same ' })
     }
 
     //pass and confpass not eq

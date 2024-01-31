@@ -1,6 +1,7 @@
 const User = require("../model/userModel")
 const bcrypt = require("bcrypt")
-
+const Order = require('../model/orderModal')
+const product = require("../model/productsModal")
 
 // loading admin LOgin 
 const AdminLogin = async (req,res)=>{
@@ -122,7 +123,61 @@ const blockUser = async (req,res)=>{
   }
 }
 
+const loadOrder  = async(req,res)=>{
+  try {
+    const order = await Order.find({})
+    .populate('userId')
+    .populate('products.productId')
+    .sort({date:-1})
+    res.render('adminOrders',{order:order})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
+const singleProductView = async(req,res)=>{
+  try {
+    const orderId = req.query.orderId
+    const order = await Order.findOne({_id:orderId}).populate('userId').populate('products.productId')
+    res.render('singleOrderDetails',{order:order})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const changeOrderStatus = async(req,res)=>{
+  try {
+   const {orderId,productId,status,userId} = req.body;
+console.log(orderId,productId,status,userId);
+    const orderData = await Order.findOneAndUpdate({_id:orderId,userId:userId,'products.productId':productId},{$set:{'products.$.status':status}})
+    console.log(orderData,'update');
+    res.json({change:true})
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const cancelOrder = async(req,res)=>{
+try {
+  const { orderId, productId } = req.body;
+
+  const orderData = await Order.findOneAndUpdate(
+    { _id: orderId, 'products.productId': productId },
+    { $set: { 'products.$.status': 'cancelled' } })
+  const productDetails = await Order.findOne(
+    { _id: orderId, 'products.productId': productId },
+    { 'products.$': 1 }
+  );
+
+  const productQty = productDetails.products[0].quantity;
+
+  await product.updateOne({ _id: productId }, { $inc: { stock: productQty } })
+  res.json({ cancel: true })
+} catch (error) {
+  console.log(error.message);
+}
+}
 
 module.exports= {
   AdminLogin,
@@ -131,5 +186,8 @@ module.exports= {
   userManagementsystem,
   loadDashboard,
   blockUser,
-
+  loadOrder,
+  singleProductView,
+  changeOrderStatus,
+  cancelOrder
 }

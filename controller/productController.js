@@ -222,19 +222,35 @@ const loadShop = async (req, res) => {
 //product  view
 const productView = async (req, res) => {
   try {
-    const productId = req.query.id
-    const product = await Product.findById(productId).populate('category')
-    const viewProduct = await Product.findById({ _id: productId })
+    const productId = req.query.id;
+    const userid = req.session.user;
+    const product = await Product.findById(productId).populate('category');
+    const viewProduct = await Product.findById({ _id: productId });
     const relatedProduct = await Product.find({
-      category: viewProduct.category
-      ,
+      category: viewProduct.category,
       _id: {
         $ne: viewProduct._id
       }
-    })
-    res.render('productDetails', { product, relatedProduct })
+    });
+
+    if (userid) {
+      const existscart = await Cart.findOne({ userId: userid });
+
+      if (existscart) {
+        const existsProduct = existscart.products.find((pro) => pro.productId.toString() === productId);
+
+        if (existsProduct) {
+          return res.render('productDetails', { product, relatedProduct, inCart: true });
+        }
+      }
+    }
+
+
+    res.render('productDetails', { product, relatedProduct, inCart: false });
+    
   } catch (error) {
     console.log(error.message);
+    res.render('errorPage', { errorMessage: 'An error occurred while loading the product details.' });
   }
 }
 

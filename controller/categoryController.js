@@ -59,7 +59,7 @@ const editCategory = async (req, res) => {
     const { id, name, description } = req.body
     const newname = req.body.editname;
     const newdescription = req.body.editdisc
-    const already = await Category.findOne({ name: newname })
+    const already = await Category.findOne({_id:{$ne:id}, name: newname })
     if (already) {
       req.flash('error', 'this name is already exist ')
       res.redirect('/admin/categories')

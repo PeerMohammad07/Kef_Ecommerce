@@ -150,7 +150,7 @@
               <% if(user.addresses&&user.addresses.length>0) {%>
                 <% user.addresses.forEach((address,index)=>{ %>
                   <label class="custom-radio">
-                    <input type="radio" value="<%= index+1%>" name="addressRadio"  id="address">
+                    <input type="radio" value="<%= index%>" name="addressRadio"  id="address">
                     <span class="checkmark" style="color:blue;">
                       Name:<%= address.name%> location:<%= address.state %>,<%= address.city%> Pin:<%= address.pinNo%>
                               phone:<%= address.phNo %></span>
@@ -288,12 +288,6 @@
                     <input class="form-check-input" type="radio" name="paymentMethod" id="razorpay" value="razorpay">
                     <label class="form-check-label" for="razorpay">
                       Razorpay
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="paymentMethod" id="paypal" value="paypal">
-                    <label class="form-check-label" for="paypal">
-                      PayPal
                     </label>
                   </div>
                 </div>
@@ -448,6 +442,18 @@
       const pin = document.getElementById('pin')
       const phone = document.getElementById('phone')
 
+    if(name.value.trim()==''||state.value.trim()==''||city.value.trim()==''||pin.value.trim()==''||phone.value.trim()==''){
+      const span  = document.getElementById('alertt')
+      alert('fill all fields')
+      return false
+    }else if(phone.value.length<10||phone.value.length>10||!/^(?!0{10}$)\d+$/.test(phone.value)){
+      alert('phone number 10 numbers')
+      return false
+    }else if(pin.value.length<6||pin.value.length>6){
+      alert('pinNo will be 6 digit')
+      return false
+    }
+
       const data = {
         name: name.value,
         state: state.value,
@@ -500,15 +506,12 @@
   <script>
     function placeOrder(total) {
       try {
-
         const radioBtnAddress = document.querySelector('input[name="addressRadio"]:checked')
         const index = radioBtnAddress ? radioBtnAddress.value : null
         if (index) {
-
           const radioBtnPayment = document.querySelector('input[name="paymentMethod"]:checked')
           const payment = radioBtnPayment ? radioBtnPayment.value : null
           if (payment) {
-
             const subTotal = total
             if (subTotal) {
               const data = {
@@ -525,10 +528,17 @@
               }).then((response)=>{
                 if(response.success==true){
                   location.href = `/orderSuccess/${response.orderId}`                
+                }else if(response.quan == true){
+                  Swal.fire({
+                    icon:'warning',
+                    text:`Sorry you product ${response.quantityLess} is Out Of Stock'`,
+                    showConfirmButton:false
+                  })
+                }else if(response.order){
+                  razorpay(response.order)
                 }
               })
             }
-
           } else {
             alert('select a payment method')
           }
@@ -541,4 +551,72 @@
 
     }
   </script>
+
+<script>
+  function razorpay(order){
+    try {
+      console.log(order,"order");
+      var options = {
+                "key": "rzp_test_LoOWJkhlCEPQCp", // Enter the Key ID generated from the Dashboard
+                "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "KEF", //your business name
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                handler: (response) => {
+                    verifyPayament(response, order);
+                },
+                "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                    "name": "KEF", //your customer's name
+                    "email": "peeru547@gmail.com",
+                    "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
+                },
+                "notes": {
+                    "address": "KEF"
+                },
+                "theme": {
+                    "color": "#3b5d50"
+                }
+            };
+
+            var rzp1 = new Razorpay(options);
+
+            rzp1.on('payment.failed', (err) => {
+                console.log(err);
+            })
+            rzp1.open();
+
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  function verifyPayament(payment,order){
+    const data = {payment,order}
+    $.ajax({
+      url:"/verifyPayment",
+      method:"POST",
+      data:JSON.stringify(data),
+      success: function(response){
+        if(response.paymentSuccess==true){
+          window.location.href =  `/orderSuccess/${order.id}` ;
+        }else{
+          Swal.fire({
+          positon: "center",
+          icon: "error",
+          title: "Payment failed",
+          showConfirmButton: false,
+          timer: 1500,
+          });
+        }
+      }
+
+    })
+  }
+
+
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
   <%- include("../layouts/user/footer.ejs") -%>

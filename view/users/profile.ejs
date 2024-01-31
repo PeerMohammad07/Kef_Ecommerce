@@ -174,7 +174,7 @@
                         <%= value.name%>
                       </td>
                       <td>
-                        <%= value.state%>,<%= value.country%>
+                        <%= value.state%>,<%= value.city%>
                       </td>
                       <td>
                         <%= value.pinNo%>
@@ -184,14 +184,15 @@
                       </td>
                       <td>
                         <!--edit address-->
-                        <a href="#" class="d-block text-dark text-decoration-none" data-toggle="modal"
-                          data-target="#editModal">Edit</a>
+                        <div> <button class="btn-primary btn-pill" data-toggle="modal" data-target="#editAddressModal">Edit</button></div>
+                    
                            <!--edit address-->
                         <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog"
                           aria-labelledby="editModalLabel" aria-hidden="true">
                           <div class="modal-dialog" role="document">
                             <div class="modal-content">
                               <div class="modal-header">
+                               
                                 <h5 class="modal-title" id="editModalLabel">Edit Address</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
@@ -200,8 +201,9 @@
                               <div class="modal-body">
                                 <form>
                                   <div class="form-group">
+                                    
                                     <label for="name">Name:</label>
-                                    <input type="text" class="form-control" id="editname" name="editName" required
+                                    <input type="text" class="form-control" value="<%=  %>" id="editname" name="editName" required
                                       placeholder="Enter your name">
                                   </div>
                                   <!-- Add other form fields here -->
@@ -218,7 +220,7 @@
                                   <div class="form-group">
                                     <label for="country">City:</label>
                                     <input type="text" class="form-control" id="editcity" name="editcity" required
-                                      placeholder="Enter your Country">
+                                      placeholder="Enter your City">
                                   </div>
                                   <!-- Add more form fields as needed -->
                                      <div class="form-group">
@@ -231,7 +233,9 @@
                                     <input type="number" class="form-control" name="editphone" id="editphone" required
                                       placeholder="Enter your phone number">
                                   </div>
+                                  <div class="pt-4 text-center">
                                   <button type="submit" class="btn btn-primary" onclick="editAddress('<%= user.email %>')" >Save Changes</button>
+                                </div>
                                 </form>
                               </div>
                             </div>
@@ -497,6 +501,18 @@ function clearInputValues() {
     const pin = document.getElementById('pin')
     const phone = document.getElementById('phone')
 
+    if(name.value.trim()==''||state.value.trim()==''||city.value.trim()==''||pin.value.trim()==''||phone.value.trim()==''){
+      const span  = document.getElementById('alertt')
+      alert('fill all fields')
+      return false
+    }else if(phone.value.length<10||phone.value.length>10||!/^(?!0{10}$)\d+$/.test(phone.value)){
+      alert('phone number 10 numbers')
+      return false
+    }else if(pin.value.length<6||pin.value.length>6){
+      alert('pinNo will be 6 digit')
+      return false
+    }
+
     const data = {
       name:name.value,
       state:state.value,
@@ -555,20 +571,22 @@ function clearInputValues() {
         const newPassword = document.getElementById('newPassword')
         const confirmPassword = document.getElementById('confirmPassword')
 
-        const errormess = document.getElementById('errormess')
-        if (currentPassword.value.trim() === '' || newPassword.value.trim() === '' || confirmPassword.value.trim() === '') {
-          errormess.textContent = 'fill all fields';
-          clearError(errormess, 2000)
-          return
-        } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(confirmPassword.value)) {
-          errormess.textContent = 'Password must be atleast 6 charcaters long and contain at least one uppercase letter one lowercase letter,and one number'
-          clearError(errormess, 2000)
-        }
         function clearError(element, time) {
           setTimeout(() => {
             element.textContent = "";
           }, time);
         }
+
+        const errormess = document.getElementById('errormess')
+        if (currentPassword.value.trim() === '' || newPassword.value.trim() === '' || confirmPassword.value.trim() === '') {
+          errormess.textContent = 'fill all fields';
+          clearError(errormess, 2000)
+          return false
+        } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/.test(confirmPassword.value)) {
+          errormess.textContent = 'Password must be atleast 6 charcaters long and contain at least one uppercase letter one lowercase letter,and one number'
+          clearError(errormess, 2000)
+          return false
+        }else{
         fetch('/changePassword', {
           method: 'POST',
           headers: {
@@ -599,6 +617,8 @@ function clearInputValues() {
             errormessagediv.textContent = data.message;
           }
         })
+        }
+       
 
 
       }
@@ -621,6 +641,7 @@ function clearInputValues() {
       editphone:editphone,
       email:email
     }
+    console.log("qwertyui");
     $.ajax({
       url:'/editAddress',
       method:'POST',

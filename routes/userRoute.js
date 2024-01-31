@@ -9,6 +9,7 @@ const cartController = require('../controller/cartController')
 const orderController = require('../controller/orderController')
 //session
 const session = require("express-session")
+const { userManagementsystem } = require("../controller/adminController")
 user_route.use(session({secret:config.sessionsecret,resave:false,saveUninitialized:false}))
 
 user_route.use((req,res,next)=>{
@@ -70,10 +71,21 @@ user_route.post('/editProfile',userController.editProfile)
 user_route.post('/changePassword',userController.changePassword)
 user_route.post('/removeAddress',userController.removeAddress)
 
+
 user_route.get('/orderSuccess/:id',orderController.loadOrderSuccess)
 
 user_route.get('/orderDetails',orderController.orderDetails)
 
 user_route.get('/myOrders',orderController.loadMyOrder)
+
+user_route.post('/updateQuantity',cartController.updateQuantity)
+
+user_route.post('/cancelOrder',orderController.cancelOrder)
+
+user_route.post('/verifyPayment',orderController.verifyPayment)
+
 module.exports = user_route;
+
+
+
 

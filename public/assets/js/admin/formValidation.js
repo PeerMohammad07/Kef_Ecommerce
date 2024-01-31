@@ -51,7 +51,7 @@ function validate(){
   return false
 }
 
-else if(phone.value.trim().length < 10 || !/^\d+$/.test(phone.value)){
+else if(phone.value.trim().length < 10 || !/^\d+$/.test(phone.value)||!/^(?!0{10}$)\d+$/.test(phone.value)){
   phone.style.border = 'solid 1px red'
   phoneErr.textContent = "Mobile number should be an Number with  10 digits"
   setTimeout(()=>{
