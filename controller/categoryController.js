@@ -73,13 +73,6 @@ const editCategory = async (req, res) => {
   }
 }
 
-const addCategory = async(req,res)=>{
-  try {
-    res.render('addCateory')
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 
 
 // category lidting and unlisting
@@ -104,7 +97,6 @@ const listUnlistCategory = async (req, res) => {
 module.exports = {
   loadaddCategory,
   loadCategory,
-  addCategory,
   loadeditCategory,
   editCategory,
   listUnlistCategory,

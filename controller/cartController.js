@@ -1,7 +1,8 @@
 const User = require('../model/userModel')
 const Product = require('../model/productsModal')
 const Cart = require('../model/cartModal')
-const { productView } = require('./productController')
+const Whishlist = require('../model/whishlistmodal')
+const product = require('../model/productsModal')
 
 
 const addToCart = async (req, res) => {
@@ -19,17 +20,17 @@ const addToCart = async (req, res) => {
           await Cart.findOneAndUpdate({ userId: userid, "products.productId": productId },
             { $inc: { "products.$.quantity": productQuantity, "products.$.totalPrice": productQuantity * existProduct.productPrice } })
         } else {
-           await Cart.findOneAndUpdate(
+          await Cart.findOneAndUpdate(
             { userId: userid },
             {
-              $push:{
-              products:{
+              $push: {
+                products: {
                   productId: productId,
                   quantity: productQuantity,
                   productPrice: product.price,
                   totalPrice: productQuantity * product.price
+                }
               }
-            }
             })
         }
       } else {
@@ -54,76 +55,134 @@ const addToCart = async (req, res) => {
   }
 }
 
-const loadCart = async (req,res)=>{
+const loadCart = async (req, res) => {
   try {
-   
-    if(!req.session.user||!req.session.user._id){
-      req.flash('error','please Login then only service')
+
+    if (!req.session.user || !req.session.user._id) {
+      req.flash('error', 'please Login then only service')
       res.redirect('/login')
-    }else{
+    } else {
       const userid = req.session.user._id
-      const cartDetails = await Cart.findOne({userId:userid}).populate({path:'products.productId'}).exec()
-      res.render('cart',{cartDetails: cartDetails})
+      const cartDetails = await Cart.findOne({ userId: userid }).populate({ path: 'products.productId' }).exec()
+      res.render('cart', { cartDetails: cartDetails })
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-const removeCart = async (req,res)=>{
+const removeCart = async (req, res) => {
   try {
     const userId = req.session.user._id
     const productId = req.body.product
-    const userCart = await Cart.findOne({userId:userId})
-    if(userCart){
+    const userCart = await Cart.findOne({ userId: userId })
+    if (userCart) {
       await Cart.findOneAndUpdate(
         {
-          userId:userId
-        },{
-          $pull:{products:{productId:productId}}
-        }
+          userId: userId
+        }, {
+        $pull: { products: { productId: productId } }
+      }
       )
     }
-    res.json({success:true})
+    res.json({ success: true })
   } catch (error) {
     console.log(error.message);
   }
 }
 
-const updateQuantity = async(req,res)=>{
-  const {productId,count}= req.body;
-  const product = await Product.findOne({_id:productId})
+const updateQuantity = async (req, res) => {
+  const { productId, count } = req.body;
+  const product = await Product.findOne({ _id: productId })
   const userid = req.session.user._id;
-  const cart = await Cart.findOne({userId:userid})
-  if(count == -1){
-    const currentQuantity = cart.products.find((p)=> p.productId == productId).quantity
-    if(currentQuantity<=1){
-     return res.json({min:true})
+  const cart = await Cart.findOne({ userId: userid })
+  if (count == -1) {
+    const currentQuantity = cart.products.find((p) => p.productId == productId).quantity
+    if (currentQuantity <= 1) {
+      return res.json({ min: true })
     }
   }
-  if(count==1){
-    const currentQuantity = cart.products.find((prod)=> prod.productId == productId).quantity
-    if(currentQuantity >= product.stock){
-     return res.json({max:true})
+  if (count == 1) {
+    const currentQuantity = cart.products.find((prod) => prod.productId == productId).quantity
+    if (currentQuantity >= product.stock) {
+      return res.json({ max: true })
     }
   }
-  const producPrice = cart.products.find((prod)=> prod.productId.toString() == productId)
+  const producPrice = cart.products.find((prod) => prod.productId.toString() == productId)
 
-  await Cart.findOneAndUpdate({userId:userid,'products.productId':productId},
-  {$inc:
+  await Cart.findOneAndUpdate({ userId: userid, 'products.productId': productId },
     {
-      'products.$.quantity':count,
-      'products.$.totalPrice': count * producPrice.productPrice
-  }}
+      $inc:
+      {
+        'products.$.quantity': count,
+        'products.$.totalPrice': count * producPrice.productPrice
+      }
+    }
   )
-  res.json({success:true})
+  res.json({ success: true })
 }
 
-   
+
+const addToWishlist = async (req, res) => {
+  try {
+    if (!req.session.user || !req.session.user._id) {
+      return res.json({ login: true, message: 'please login' })
+    } else {
+
+      const userId = req.session.user?._id
+      const { productId } = req.body;
+      const already = await Whishlist.findOne({ productId: productId })
+      if (already) {
+        res.json({ already: true })
+      } else {
+        const whishlist = new Whishlist({
+          userId: userId,
+          productId: productId
+        })
+        await whishlist.save()
+        res.json({ added: true })
+      }
+    }
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const loadWishList = async (req,res)=>{
+  try {
+    if (!req.session.user || !req.session.user._id) {
+      req.flash('error', 'please Login then only service')
+      res.redirect('/login')
+    }else{
+      const userId = req.session.user._id
+      const allWishList = await  Whishlist.find({userId:userId}).populate('productId')
+      res.render('whishList',{allWishList})
+    }
+    
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const removeWishlist = async(req,res)=>{
+  try {
+    const {productId} = req.body;
+    const remove = await Whishlist.findOneAndDelete({productId:productId})
+    res.json({removed:true})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+
 module.exports = {
   addToCart,
   loadCart,
   removeCart,
-  updateQuantity
-
+  updateQuantity,
+  addToWishlist,
+  loadWishList,
+  removeWishlist
 }

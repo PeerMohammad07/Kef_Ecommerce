@@ -4,7 +4,7 @@ const Order = require('../model/orderModal')
 const Product = require('../model/productsModal')
 const Razorpay = require('razorpay');
 const product = require('../model/productsModal');
-
+const crypto = require('crypto')
 
 var instance = new Razorpay({
   key_id: 'rzp_test_LoOWJkhlCEPQCp',
@@ -21,62 +21,61 @@ const placeOrder = async (req, res) => {
     const userid = req.session.user._id;
     const cart = await Cart.findOne({ userId: userid }).populate('products.productId')
     const products = cart.products;
-    console.log(products);
     let quantityLess = 0;
-    const quancheck = products.forEach((pro)=> {
-      if(pro.productId.stock <= 0){
-         quantityLess = pro.productId.name;
+    const quancheck = products.forEach((pro) => {
+      if (pro.productId.stock <= 0) {
+        quantityLess = pro.productId.name;
+      }
+
+    })
+
+    if (quantityLess) {
+      res.json({ quan: true, quantityLess })
+    } else {
+      const user = await User.findOne({ _id: userid })
+      const status = payment == 'COD' ? 'placed' : 'pending'
+      const address = user.addresses[index]
+      const date = Date.now()
+      const order = new Order({
+        userId: userid,
+        products: products,
+        totalAmount: subTotal,
+        date: date,
+        status: status,
+        deliveryAddress: address,
+        paymentMethod: payment
+      })
+      const oderDetails = await order.save()
+      const orderId = oderDetails._id;
+
+      //if the payment is cod
+      if (oderDetails.status == 'placed') {
+        await Cart.deleteOne({ userId: userid })
+        for (let i = 0; i < products.length; i++) {
+
+          const productId = products[i].productId;
+          const productQuantity = products[i].quantity;
+          await Product.updateOne({ _id: productId }, { $inc: { stock: -productQuantity } })
         }
-        
-    }) 
-    
-    if(quantityLess){
-      res.json({quan:true,quantityLess})
-    }else{
-    const user = await User.findOne({ _id: userid })
-    const status = payment == 'COD' ? 'placed' : 'pending'
-    const address = user.addresses[index]
-    const date = Date.now()
-    const order = new Order({
-      userId: userid,
-      products: products,
-      totalAmount: subTotal,
-      date: date,
-      status: status,
-      deliveryAddress: address,
-      paymentMethod: payment
-    })
-    const oderDetails = await order.save()
-    const orderId = oderDetails._id;
+        res.json({ success: true, orderId })
 
-    //if the payment is cod
-    if (oderDetails.status == 'placed') {
-      await Cart.deleteOne({ userId: userid })
-      for (let i = 0; i < products.length; i++) {
-
-        const productId = products[i].productId;
-        const productQuantity = products[i].quantity;
-        await Product.updateOne({ _id: productId }, { $inc: { stock: -productQuantity } })
       }
-      res.json({ success: true, orderId })
+      // if the payment is razorpay
+      else if (oderDetails.status == 'pending') {
+        const options = {
+          amount: subTotal * 100,
+          currency: "INR",
+          receipt: "" + oderDetails._id,
+        }
+        instance.orders.create(options, function (err, order) {
+          if (err) {
+            console.log(err);
+          }
+          res.json({ order })
+        })
+      }
 
     }
-    // if the payment is razorpay
-    else if(oderDetails.status == 'pending'){
-      const options = {
-        amount: subTotal * 100,
-        currency: "INR",
-        receipt: "" + oderDetails._id,
-    }
-    instance.orders.create(options,function(err,order){
-      if(err){
-        console.log(err);
-      }
-      res.json({order})
-    })
-    }
-    
-  }
   } catch (error) {
     console.log(error);
   }
@@ -134,35 +133,29 @@ const cancelOrder = async (req, res) => {
   }
 };
 
-const verifyPayment = async(req,res)=>{
-  console.log("it comes here verifypayment");
+const verifyPayment = async (req, res) => {
   try {
-    const {payment,order} = req.body;
+    const { payment, order } = req.body;
     const userId = req.session.user?._id
-    const hmac = crypto.createHmac("sha256", "ggKTkKRDipDAjKdXuYDXs6XH");
-    hmac.update( payment.razorpay_order_id  + "|" + payment.razorpay_payment_id );
+    const hmac = crypto.createHmac("sha256", "RoKLB9O83abv125T0hrpSIA0");
+    hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id);
     const hmacValue = hmac.digest("hex");
-    
-    if(hmacValue === payment.razorpay_signature ){
-
-      const cart = await Cart.findOne({userId:userId}).populate("products.productId")
+    if (hmacValue === payment.razorpay_signature) {
+      const cart = await Cart.findOne({ userId: userId }).populate("products.productId")
       const products = cart.products;
 
-      for(let i=0;i< products.length;i++){
+      for (let i = 0; i < products.length; i++) {
         let productId = products[i].productId;
         const productQty = products[i].quantity;
-        await Product.findOneAndUpdate({_id:productId},{$inc:{'products.$.productId': -productQty }})
+        await Product.findOneAndUpdate({ _id: productId }, { $inc: { stock: -productQty } })
       }
-for(let i =0;i< order.products.length;i++){
-  await Order.findOneAndUpdate({_id:order.receipt},{$set:{status:"placed",paymentId:payment.razorpay_payment_id}})
-}
-   
-      await Cart.deleteOne({userId:userId})
-      res.json({success:true})
+      await Order.findOneAndUpdate({ _id: order.receipt }, { $set: { status: "placed", paymentId: payment.razorpay_payment_id } })
 
+      await Cart.deleteOne({ userId: userId })
+      res.json({ paymentSuccess: true })
     }
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 }
 

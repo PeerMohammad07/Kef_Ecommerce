@@ -89,7 +89,7 @@
             <a class="nav-link" href="/">Home</a>
           </li>
           <li><a class="nav-link" href="/shop">Shop</a></li>
-          <li><a class="nav-link" href="contact.html">Contact us</a></li>
+
         </ul>
 
         <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -555,7 +555,6 @@
 <script>
   function razorpay(order){
     try {
-      console.log(order,"order");
       var options = {
                 "key": "rzp_test_LoOWJkhlCEPQCp", // Enter the Key ID generated from the Dashboard
                 "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -593,14 +592,15 @@
   }
 
   function verifyPayament(payment,order){
+    console.log(order,"orer");
     const data = {payment,order}
     $.ajax({
       url:"/verifyPayment",
       method:"POST",
-      data:JSON.stringify(data),
+      data:data,
       success: function(response){
-        if(response.paymentSuccess==true){
-          window.location.href =  `/orderSuccess/${order.id}` ;
+        if(response.paymentSuccess == true){
+          window.location.href = `/orderSuccess/${order.receipt}` ;
         }else{
           Swal.fire({
           positon: "center",

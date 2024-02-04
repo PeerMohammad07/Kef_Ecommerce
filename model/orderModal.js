@@ -61,6 +61,9 @@ const orderSchema = mongoose.Schema({
   deliveryAddress:{
     type:Object,
     required:true
+  },
+  paymentId:{
+    type:String
   }
 })
 

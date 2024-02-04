@@ -113,7 +113,7 @@
                       <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                       <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                      <a class="dropdown-item text-danger" href="/admin/Logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
                   </div>
               </li>
           </ul>
@@ -175,7 +175,7 @@
                                   <td><b><%= item.userId.name%></b></td>
                                   <td><%= item.userId.email%></td>
                                   <td><%= item.totalAmount%></td>
-                                  <td><span class="badge rounded-pill alert-warning">Pending</span></td>
+                                  <td><span class="badge rounded-pill alert-warning"><%= item.status %></span></td>
                                   <% const formattedDate = item.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }); %>
                                   <td><%= formattedDate%></td>
                                   <td class="">

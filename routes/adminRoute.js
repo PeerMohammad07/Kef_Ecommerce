@@ -27,9 +27,9 @@ admin_route.post('/blockUser',adminController.blockUser)
 
 //Products
 admin_route.get('/products',adminAuth.isLogout,productController.loadProduct)
-admin_route.get('/addProduct',productController.loadaddProduct)
+admin_route.get('/addProduct',adminAuth.isLogout,productController.loadaddProduct)
 admin_route.post('/addProduct',multer.array('images'),productController.addProduct)
-admin_route.get('/edit-product',productController.editProductLoad)
+admin_route.get('/edit-product',adminAuth.isLogout,productController.editProductLoad)
 admin_route.post('/edit-product',multer.array('images'),productController.editProduct)
 admin_route.post('/deleteProduct',productController.deleteProduct)
 
@@ -37,16 +37,20 @@ admin_route.post('/deleteProduct',productController.deleteProduct)
 // Category 
 admin_route.get('/categories',adminAuth.isLogout,categoryController.loadCategory)
 admin_route.post('/categories',categoryController.insertCategory)
-admin_route.get('/addCategory',categoryController.loadaddCategory)
-admin_route.post('/addCategory',categoryController.addCategory)
-admin_route.get('/editCategory',categoryController.loadeditCategory)
+admin_route.get('/addCategory',adminAuth.isLogout,categoryController.loadaddCategory)
+admin_route.get('/editCategory',adminAuth.isLogout,categoryController.loadeditCategory)
 admin_route.post('/editCategory',categoryController.editCategory)
 admin_route.post('/list-Unlist',categoryController.listUnlistCategory)
 
 
 
 admin_route.get('/orders',adminAuth.isLogout,adminController.loadOrder)
-admin_route.get('/singleOrderDetails',adminController.singleProductView)
+admin_route.get('/singleOrderDetails',adminAuth.isLogout,adminController.singleProductView)
 admin_route.post('/changeOrderStatus',adminController.changeOrderStatus)
 admin_route.post('/cancelOrder',adminController.cancelOrder)
+
+//dashboard
+admin_route.post('/createReport',adminController.loadCreateReport)
+
+
 module.exports = admin_route;

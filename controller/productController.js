@@ -209,9 +209,9 @@ const loadShop = async (req, res) => {
   try {
     let id = req.query.id
     if (req.query.id) {
-      products = await Product.find({ category: id }).populate("category")
+      products = await Product.find({ category: id,is_Listed:false }).populate("category")
     } else {
-      products = await Product.find({}).populate("category")
+      products = await Product.find({is_Listed:false}).populate("category")
     }
     res.render('shop', { products, category })
   } catch (error) {

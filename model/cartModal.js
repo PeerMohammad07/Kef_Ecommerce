@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const product = require('./productsModal')
 
 const ObjectId = mongoose.Schema.Types.ObjectId
 

@@ -13,7 +13,7 @@
           <li class="nav-item ">
             <a class="nav-link" href="/">Home</a>
           </li>
-          <li><a class="nav-link" href="/whishlist">Whislist</a></li>
+          <li><a class="nav-link" href="/whishList">Whishlist</a></li>
           <li><a class="nav-link" href="/myOrders">My Orders</a></li>
         </ul>
 
@@ -168,7 +168,7 @@
               </thead>
               <tbody>
                 <% if(user.addresses.length>0){ %>
-                  <% user.addresses.forEach((value)=>{ %>
+                  <% user.addresses.forEach((value, i)=>{ %>
                     <tr>
                       <td>
                         <%= value.name%>
@@ -184,64 +184,7 @@
                       </td>
                       <td>
                         <!--edit address-->
-                        <div> <button class="btn-primary btn-pill" data-toggle="modal" data-target="#editAddressModal">Edit</button></div>
-                    
-                           <!--edit address-->
-                        <div class="modal fade" id="editAddressModal" tabindex="-1" role="dialog"
-                          aria-labelledby="editModalLabel" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                               
-                                <h5 class="modal-title" id="editModalLabel">Edit Address</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                <form>
-                                  <div class="form-group">
-                                    
-                                    <label for="name">Name:</label>
-                                    <input type="text" class="form-control" value="<%=  %>" id="editname" name="editName" required
-                                      placeholder="Enter your name">
-                                  </div>
-                                  <!-- Add other form fields here -->
-                                 
-                                  <div class="form-group">
-                                    <label for="state">State:</label>
-                                    <select class="form-control" id="editstate" name="editState">
-                                      <option value="Kerala">Kerala</option>
-                                      <option value="TamilNadu">Tamil Nadu</option>
-                                      <option value="Bengaluru">Bengaluru</option>
-                                      <option value="Goa">Goa</option>
-                                    </select>
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="country">City:</label>
-                                    <input type="text" class="form-control" id="editcity" name="editcity" required
-                                      placeholder="Enter your City">
-                                  </div>
-                                  <!-- Add more form fields as needed -->
-                                     <div class="form-group">
-                                    <label for="pin">Pin No:</label>
-                                    <input type="number" class="form-control" name="editpin" id="editpin" required
-                                      placeholder="Enter your pin number">
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="phone">Phone No:</label>
-                                    <input type="number" class="form-control" name="editphone" id="editphone" required
-                                      placeholder="Enter your phone number">
-                                  </div>
-                                  <div class="pt-4 text-center">
-                                  <button type="submit" class="btn btn-primary" onclick="editAddress('<%= user.email %>')" >Save Changes</button>
-                                </div>
-                                </form>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <!--edit address-->
+                        <div> <button class="btn-warning btn-pill"><a style="text-decoration: none;" href="/editAddress?id=<%= value._id%>&index=<%= i%>">Edit</a></button></div>
 
 
                         <!--remove address-->
@@ -624,51 +567,4 @@ function clearInputValues() {
       }
     </script>
 
-
-<script>
-  function editAddress(email){
-    const editname = document.getElementById('editname')
-    const editstate = document.getElementById('editstate')
-    const editcity = document.getElementById('editcity')
-    const editpin = document.getElementById('editpin')
-    const editphone = document.getElementById('editphone')
-
-    const data ={
-      editname:editname,
-      editstate:editstate,
-      editcity:editcity,
-      editpin:editpin,
-      editphone:editphone,
-      email:email
-    }
-    console.log("qwertyui");
-    $.ajax({
-      url:'/editAddress',
-      method:'POST',
-      data:JSON.stringify(data),
-      contentType:'application/json',
-      success:function(response){
-        if(response.edited==true){
-          Swal.fire({
-            icon:'success',
-            text:'success',
-          }).then(()=>{
-            location.reload()
-            $('#editAddressModal').modal('hide')
-        })
-        }else{
-          Swal.fire({
-            icon:'error',
-            text:'edit address failed'
-          }).then(()=>{
-            location.reload()
-          })
-        }
-      }
-    })
-
-
-
-  }
-</script>
     <%- include('../layouts/user/footer.ejs') -%>

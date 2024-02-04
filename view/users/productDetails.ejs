@@ -38,7 +38,7 @@
           <li><a class="nav-link" href="/about">About us</a></li>
           <li><a class="nav-link" href="services.html">Services</a></li>
           <li><a class="nav-link" href="/blog">Blog</a></li>
-          <li><a class="nav-link" href="contact.html">Contact us</a></li>
+          <li><a class="nav-link" href="/whishList">Whishlist</a></li>
         </ul>
 
         <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -131,8 +131,6 @@
               </div>
             </div>
 
-
-
             <h1 class="mb-1 fs-2 fw-bold">
               <%= product.name %>
             </h1>
@@ -140,7 +138,6 @@
               <!-- <s class="text-danger">₹<%= product.previous_price %></s> -->
               <p class="mt-2 mb-0 small"> <span
                   class=" ps-1 fs-4 m-0">₹<%= product.price %></span></p>
-
             </div>
             <%if(product.stock<=0){%>
             <input type="button" class="border-0" class="incdec" onclick="decrementValue()" value="-" />
@@ -163,7 +160,9 @@
                 <input type="text" class="incdec" name="quantity" value="1" maxlength="2" max="<%= product.stock %>"
                   size="1" id="number" />
                 <input type="button" class="border-0" class="incdec" onclick="incrementValue()" value="+" />
-
+                <!-- whishlist -->
+                <button id="wishlistBtn" class="w-10 mt-2" style="background-color: white; border: white;  color: black;" onclick="addToWishlist('<%= product._id %>')"><i class="fa-regular fa-heart" style="color: #B197FC;"></i></button>
+                <!-- whishlist -->
                 <button id="addToCartBtn" class="w-100 mt-4" style="background-color: #3b5d50; color: aliceblue;"
                 onclick="addToCart('<%= product._id %>')">Add To Cart</button>
                   <%}%>
@@ -765,6 +764,51 @@
 
     </div>
   </footer>
+
+
+<script>
+  function addToWishlist(id){
+    console.log("setAhn macu");
+    const data = {productId:id}
+    console.log(data);
+  $.ajax({
+    url:'/addToWishlist',
+    method:'POST',
+    data:data,
+    success:function (response){
+      if(response.added == true){
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Added to Whishlist ',
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: 'ok',
+          })
+      }else if (response.login == true){
+        Swal.fire({
+            icon: 'warning',
+            title: 'Please Login',
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "Login",
+            showCancelButton: true,
+            cancelButtonColor: "#d33",
+            text: response.message
+          }).then((res) => {
+            if (res.isConfirmed) {
+              window.location.href = '/login'
+            }
+          })
+      }else if(response.already == true){
+        Swal.fire({
+          title:'already in the whishlist',
+          confirmButton:false
+        })
+      }
+    }
+  })
+  }
+</script>
+
 
 
   <script>

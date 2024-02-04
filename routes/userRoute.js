@@ -9,7 +9,6 @@ const cartController = require('../controller/cartController')
 const orderController = require('../controller/orderController')
 //session
 const session = require("express-session")
-const { userManagementsystem } = require("../controller/adminController")
 user_route.use(session({secret:config.sessionsecret,resave:false,saveUninitialized:false}))
 
 user_route.use((req,res,next)=>{
@@ -65,12 +64,17 @@ user_route.post('/placeOrder',orderController.placeOrder)
 //Profile Section
 user_route.get('/profile',userController.loadProfile)
 user_route.post('/addAddress',userController.addAddress)
-// user_route.post('/editAddress',userController.editAddress)
+user_route.get('/editAddress',userController.loadeditAddress)
+user_route.post('/editAddress',userController.editAddress)
 user_route.get('/editProfile',userController.loadeditProfile)
 user_route.post('/editProfile',userController.editProfile)
 user_route.post('/changePassword',userController.changePassword)
 user_route.post('/removeAddress',userController.removeAddress)
 
+
+user_route.get('/whishList',cartController.loadWishList)
+user_route.post('/addToWishlist',cartController.addToWishlist)
+user_route.post('/removeWishlist',cartController.removeWishlist)
 
 user_route.get('/orderSuccess/:id',orderController.loadOrderSuccess)
 

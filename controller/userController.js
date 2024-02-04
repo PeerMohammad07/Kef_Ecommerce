@@ -420,30 +420,40 @@ const addAddress = async (req, res) => {
 }
 
 
-//editAddress
-// const editAddress = async (req, res) => {
-//   try {
-//     const { editname,
-//       editstate,
-//       editcity,
-//       editpin,
-//       editphone,
-//       email } = req.body;
-//       await User.findOneAndUpdate({
-//         email:email
-//       },{
+//load editAddress
+const loadeditAddress = async (req, res) => {
+  try {
+    const addressId = req.query.id;
+    const index = req.query.index
+    const userId = req.session.user?._id
+    const user = await User.findOne({_id:userId})
+    const address = user.addresses.find((address)=> address._id == addressId)
+    res.render('editAddress',{address,index})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
-//       })
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
-
-
-
-
-
-
+const editAddress = async (req,res)=>{
+  try {
+    const userId = req.session.user?._id
+    const index = req.query.index
+    const {id,name,state,city,pin,phone} = req.body;
+    const updateAddress = await User.findByIdAndUpdate(
+      {_id:userId},
+      {$set:{
+        [`addresses.${index}.name`]: name,
+        [`addresses.${index}.state`]: state,
+        [`addresses.${index}.city`]: city,
+        [`addresses.${index}.pin`]: pin,
+        [`addresses.${index}.phone`]: phone
+      }}
+      )
+    res.redirect('/profile')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 
 const loadeditProfile = async (req, res) => {
@@ -578,4 +588,6 @@ module.exports = {
   changePassword,
   removeAddress,
   loadCheckout,
+  loadeditAddress,
+  editAddress
 }

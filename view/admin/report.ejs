@@ -1,0 +1,104 @@
+<%- include("../layouts/admin/header.ejs") -%>
+
+          <!-- card-header end// -->
+          <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th scope="col">Order Id</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Price x quantity</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Payment Mode</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% if(Array.isArray(orders)) {%>
+                         <%orders.forEach((order) => {%>
+                            <% order.products.forEach((product,i)=>{%>
+                                <% if(product.status == 'delivered'){ %>
+                            <tr>
+                                <td><%= i + 1%></td>
+                                <td><%= order._id %></td>
+                                <td><img src="/assets/product/sharpedproduct/<%= product.productId.images[0] %>" alt="" style="height: 50px; width: 50px;"></td>
+                                <td><%= order.userId.name %></td>
+                                <td><%= product.productId.price %>x<%= product.quantity %></td>
+                                <% const total =  product.productId.price * product.quantity  %>
+                                <td><%= total %></td>
+                                <% const formattedDate = order.date.toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }); %>
+                                <td><%= formattedDate%></td>
+                                <td><%= order.paymentMethod %></td>
+                                <td><%= product.status %></td>
+                            </tr>
+                            <%}%>
+                            <% }) %>
+                         <%})%>
+                    <%} else {%>
+                        <h1>NO Orders in this date</h1>
+                    <%}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+              <!-- table-responsive //end -->
+          </div>
+          <!-- card-body end// -->
+      </div>
+      <!-- card end// -->
+      <!-- <div class="pagination-area mt-15 mb-50">
+          <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-start">
+                  <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                  <li class="page-item"><a class="page-link" href="#">02</a></li>
+                  <li class="page-item"><a class="page-link" href="#">03</a></li>
+                  <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                  <li class="page-item"><a class="page-link" href="#">16</a></li>
+                  <li class="page-item">
+                      <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                  </li>
+              </ul>
+          </nav>
+      </div> -->
+  </section>
+<div  id="hide">
+    <button onclick="downloadReport()" class="btn-warning" >Download pdf</button>
+    <button class="btn-danger"><a href="/admin/dashboard">Back</a></button>
+</div>
+
+<script>
+    let hide = document.getElementById('hide')
+    function downloadReport(){
+        hideDownloadButton()
+        window.print()
+        showDownloadButton()
+    }
+    function  hideDownloadButton(){
+        hide.style.display = 'none'
+    }
+    function showDownloadButton(){
+        hide.style.display = 'inline-block'
+    }
+</script>
+
+  <!-- content-main end// -->
+  <!-- <footer class="main-footer font-xs">
+      <div class="row pb-30 pt-15">
+          <div class="col-sm-6">
+              <script>
+                  document.write(new Date().getFullYear());
+              </script>
+              &copy; Nest - HTML Ecommerce Template .
+          </div>
+          <div class="col-sm-6">
+              <div class="text-sm-end">All rights reserved</div>
+          </div>
+      </div>
+  </footer> -->
+</main>
+
+<%- include("../layouts/admin/footer.ejs") -%>
