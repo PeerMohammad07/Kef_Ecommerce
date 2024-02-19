@@ -149,27 +149,27 @@ const addToWishlist = async (req, res) => {
   }
 }
 
-const loadWishList = async (req,res)=>{
+const loadWishList = async (req, res) => {
   try {
     if (!req.session.user || !req.session.user._id) {
       req.flash('error', 'please Login then only service')
       res.redirect('/login')
-    }else{
+    } else {
       const userId = req.session.user._id
-      const allWishList = await  Whishlist.find({userId:userId}).populate('productId')
-      res.render('whishList',{allWishList})
+      const allWishList = await Whishlist.find({ userId: userId }).populate('productId')
+      res.render('whishList', { allWishList })
     }
-    
+
   } catch (error) {
     console.log(error.message);
   }
 }
 
-const removeWishlist = async(req,res)=>{
+const removeWishlist = async (req, res) => {
   try {
-    const {productId} = req.body;
-    const remove = await Whishlist.findOneAndDelete({productId:productId})
-    res.json({removed:true})
+    const { productId } = req.body;
+    const remove = await Whishlist.findOneAndDelete({ productId: productId })
+    res.json({ removed: true })
   } catch (error) {
     console.log(error.message);
   }

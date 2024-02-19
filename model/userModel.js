@@ -46,8 +46,22 @@ const userschema = new mongoose.Schema({
   },
   verified :{
     type : Boolean,
-   
-  }
+  },
+  wallet:{
+    type:Number,
+    default:0
+  },
+  walletHistory :[
+    {
+      amount:{
+        type:Number,
+        default:0
+      },
+      date:{
+        type : Date
+      }
+    }
+  ]
 })
 
 module.exports = mongoose.model("User", userschema)

@@ -58,8 +58,30 @@ const placeOrder = async (req, res) => {
           await Product.updateOne({ _id: productId }, { $inc: { stock: -productQuantity } })
         }
         res.json({ success: true, orderId })
-
       }
+
+      //if the payment is wallet
+      if(oderDetails.paymentMethod == 'wallet'){
+      const user = await User.findOne({_id:userid})
+      if(user.wallet >= subTotal){
+        const data = {
+          amount : subTotal,
+          date: new Date()
+        }
+        await User.findByIdAndUpdate({_id:userid},{$inc:{wallet:-subTotal}, $push: { walletHistory: data }})
+        await Order.findOneAndUpdate({userId:userid},{$set:{status:"placed"}})
+        await Cart.deleteOne({userId:userid})
+        for (let i = 0; i < products.length; i++) {
+          const productId = products[i].productId;
+          const productQuantity = products[i].quantity;
+          await Product.updateOne({ _id: productId }, { $inc: { stock: -productQuantity } })
+        }
+        res.json({wallet:true,orderId})
+      }else{
+        res.json({money:true})
+      }
+      }
+
       // if the payment is razorpay
       else if (oderDetails.status == 'pending') {
         const options = {
@@ -85,7 +107,6 @@ const placeOrder = async (req, res) => {
 const loadOrderSuccess = async (req, res) => {
   try {
     const orderId = req.params.id
-    console.log("getting params ", orderId);
     res.render('orderSuccess', { orderId })
   } catch (error) {
     console.log(error.message);
@@ -105,7 +126,7 @@ const orderDetails = async (req, res) => {
 const loadMyOrder = async (req, res) => {
   try {
     const userid = req.session.user._id
-    const orders = await Order.find({ userId: userid }).populate('products.productId')
+    const orders = await Order.find({ userId: userid }).populate('products.productId').sort({date:-1})
     res.render('myOrders', { orders })
   } catch (error) {
     console.log(error.message);
@@ -115,19 +136,34 @@ const loadMyOrder = async (req, res) => {
 const cancelOrder = async (req, res) => {
   try {
     const { orderId, productId } = req.body;
+    const userId = req.session.user?._id
 
-    const orderData = await Order.findOneAndUpdate(
+     const orderDetails = await Order.findOneAndUpdate(
       { _id: orderId, 'products.productId': productId },
       { $set: { 'products.$.status': 'cancelled' } })
+
     const productDetails = await Order.findOne(
       { _id: orderId, 'products.productId': productId },
       { 'products.$': 1 }
-    );
+    ).populate('products.productId')
+
+    const total = productDetails.products[0].productId.price * productDetails.products[0].quantity;
+    if(orderDetails.paymentMethod == 'razorpay' || orderDetails.paymentMethod == 'wallet'){
+      const user  = await User.findOne({_id:userId})
+      user.wallet += total
+      const data = {
+        amount: total,
+        date: new Date()
+      }
+      user.walletHistory.push(data)
+      user.save()
+    }
 
     const productQty = productDetails.products[0].quantity;
-
     await Product.updateOne({ _id: productId }, { $inc: { stock: productQty } })
+
     res.json({ cancel: true })
+
   } catch (error) {
     console.log(error.message);
   }

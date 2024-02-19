@@ -65,8 +65,9 @@
           </nav>
       </div> -->
   </section>
-<div  id="hide">
+<div  id="hide" class="text-center pt-5 pb-5">
     <button onclick="downloadReport()" class="btn-warning" >Download pdf</button>
+    <button id="downloadButton" class="btn-primary">Excel Download</button>
     <button class="btn-danger"><a href="/admin/dashboard">Back</a></button>
 </div>
 
@@ -85,20 +86,59 @@
     }
 </script>
 
-  <!-- content-main end// -->
-  <!-- <footer class="main-footer font-xs">
-      <div class="row pb-30 pt-15">
-          <div class="col-sm-6">
-              <script>
-                  document.write(new Date().getFullYear());
-              </script>
-              &copy; Nest - HTML Ecommerce Template .
-          </div>
-          <div class="col-sm-6">
-              <div class="text-sm-end">All rights reserved</div>
-          </div>
-      </div>
-  </footer> -->
+<script>
+    document.getElementById('downloadButton').addEventListener('click', function () {
+        const data = generateExcelData();
+        const excelBuffer = generateExcelFile(data);
+        downloadExcelFile(excelBuffer, 'SalesReport');
+    });
+
+    function generateExcelData() {
+        const table = document.querySelector('.table');
+        const rows = table.querySelectorAll('tbody tr');
+        const data = [['Index', 'Order Id', 'User', 'Price x Quantity', 'Total', 'Date', 'Payment Mode', 'Status']];
+
+        rows.forEach(row => {
+            const rowData = [];
+            row.querySelectorAll('td').forEach((cell, index) => {
+                if (index !== 2) { // Skip the image column
+                    rowData.push(cell.textContent.trim());
+                }
+            });
+            data.push(rowData);
+        });
+
+        return data;
+    }
+
+    function generateExcelFile(data) {
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sales Report');
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        return excelBuffer;
+    }
+
+    function downloadExcelFile(buffer, fileName) {
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName + '.xlsx';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
 </main>
+<!-- Add these script tags to include the xlsx library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+<script>
+
+</script>
+
+
+
 
 <%- include("../layouts/admin/footer.ejs") -%>

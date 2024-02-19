@@ -1,332 +1,194 @@
 <%- include("../layouts/user/header.ejs") -%>
-  <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark " arial-label="Furni navigation bar">
+<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark " arial-label="Furni navigation bar">
 
-    <div class="container">
-      <a class="navbar-brand" href="/">KEF<span>.</span></a>
+	<div class="container">
+		<a class="navbar-brand" href="/">KEF<span>.</span></a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
-        aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarsFurni">
-        <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-          <li class="nav-item ">
-            <a class="nav-link" href="/">Home</a>
-          </li>
-          <li><a class="nav-link" href="/whishList">Whishlist</a></li>
-          <li><a class="nav-link" href="">My Orders</a></li>
-        </ul>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+<div class="collapse navbar-collapse" id="navbarsFurni">
+	<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+		<li class="nav-item ">
+			<a class="nav-link" href="/">Home</a>
+		</li>
+		<li><a class="nav-link" href="/shop">Shop</a></li>
+	</ul>
 
-        <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+	<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+		
+<%if(locals.user){ %>
+	<div class="dropdown show">
+		<a class="btn  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<img src="/static/images/user.svg">
+		</a>
+	
+		<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+			<a class="dropdown-item text-light" href="/logout">Logout</a>
+			<a class="dropdown-item text-light" href="/profile">Profile</a>
+			<!-- <a class="dropdown-item" href="#"></a> -->
+		</div>
+	</div>
+	<%} else{%>
+		<li><a class="nav-link" href="/login"><img src="/static/images/user.svg"></a></li>
+		<%}%>
+		<li><a class="nav-link" href="/cart"><img src="/static/images/cart.svg"></a></li>
+	</ul>
+</div>
+</div>	
 
-          <%if(locals.user){ %>
-            <div class="dropdown show">
-              <a class="btn  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                <img src="/static/images/user.svg">
-              </a>
+</nav>
+<style>
+  .bodyy {
+    font-family: Arial, sans-serif;
+    /* background-color: #f8f9fa; */
+    margin: 0;
+    padding: 0;
+  }
 
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item text-light" href="/logout">Logout</a>
-                <a class="dropdown-item text-light" href="/profile">Profile</a>
-                <!-- <a class="dropdown-item" href="#"></a> -->
-              </div>
-            </div>
-            <%} else{%>
-              <li><a class="nav-link" href="/login"><img src="/static/images/user.svg"></a></li>
-              <%}%>
-                <li><a class="nav-link" href="/cart"><img src="/static/images/cart.svg"></a></li>
-        </ul>
-      </div>
-    </div>
+  .containerr {
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+  }
 
-  </nav>
+  .order-detailss {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-  <style>
-    .bodyy {
-      font-family: Arial, sans-serif;
-      /* background-color: #f8f9fa; */
-      margin: 0;
-      padding: 0;
-    }
+  .order-itemm {
+    border-bottom: 1px solid #ccc;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .containerr {
-      max-width: 600px;
-      margin: 20px auto;
-      background-color: #fff;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      border-radius: 5px;
-    }
+  .order-details,
+  .product-details {
+    flex: 1;
+  }
 
-    .order-detailss {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .right-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* Align to the right side */
+  }
 
-    .order-itemm {
-      border-bottom: 1px solid #ccc;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .product-image {
+    display: flex;
+    flex-direction: column;
+    /* Display images vertically */
+  }
 
-    .order-details,
-    .product-details {
-      flex: 1;
-    }
+  .product-image img {
+    height: 150px;
+    width: 150px;
+  }
 
-    .right-side {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      /* Align to the right side */
-    }
+  .cancel-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
 
-    .product-image {
-      display: flex;
-      flex-direction: column;
-      /* Display images vertically */
-    }
+  .heading {
+    color: brown;
+  }
+</style>
 
-    .product-image img {
-      height: 150px;
-      width: 150px;
-    }
+<div class="text-center">
+  <h1 class="heading">My Orders</h1>
+</div>
 
-    .cancel-btn {
-      background-color: #dc3545;
-      color: #fff;
-      border: none;
-      padding: 8px 15px;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    .heading {
-      color: brown;
-    }
-  </style>
-
-  <!-- Your existing HTML structure -->
-  <div class="text-center">
-    <h1 class="heading">My Orders</h1>
-  </div>
-<div  id="reloadreload">
+<div id="reloadreload">
   <% if (orders && Array.isArray(orders)) { %>
-    <% orders.forEach((order)=> { %>
-      <% order.products.forEach((product)=> { %>
-        <div class="bodyy">
-          <div class="containerr">
-            <div class="order-detailss">
-              <div class="order-itemm">
-                <!-- Left side: Order details -->
-                <div class="order-details">
-                  <div><strong>Order ID:</strong>
-                    <%= order._id %>
-                  </div>
+    <% orders.forEach((order) => { %>
+      <div class="bodyy">
+        <div class="containerr">
+          <div class="order-detailss">
+            <div class="order-itemm">
+              <!-- Left side: Order details -->
+              <div class="order-details">
+                <div><strong>Order ID:</strong> <%= order._id %></div>
+                <div><strong>Place On:</strong> <%= order.date.toLocaleDateString('en-US', { year: 'numeric',
+                  month: 'short', day: '2-digit' }).replace(/\//g, '-') %></div>
+                <div><strong>Payment Method:</strong> <%= order.paymentMethod %></div>
+                <div><strong>Total Amount:</strong> ₹ <%= order.totalAmount %></div>
+                <div><strong>Address:</strong> <%= order.deliveryAddress.name  %>,<%=  order.deliveryAddress.state %>,<%= order.deliveryAddress.city %>,<%= order.deliveryAddress.phNo %></div>
 
-                  <div class="product-details">
-                    <div><strong>Place On:</strong> <%=order.date.toLocaleDateString('en-US', { year:'numeric',
-                        month: 'short' , day: '2-digit' }).replace(/\//g, '-' )%>
-                    </div>
-                    <div><strong>Product Name:</strong>
-                      <%= product.productId.name %>
-                    </div>
-                    <div><strong>Quantity:</strong>
-                      <%= product.quantity %>
-                    </div>
-                    <div><strong>Payment Method:</strong>
-                      <%= order.paymentMethod %>
-                    </div>
-                    <div><strong>Total Amount:</strong> ₹ <%= order.totalAmount %>
-                    </div>
-                  </div>
-
-                </div>
-                <!-- Right side: Product image, Cancel button, Status -->
-                <div class="right-side ps-5 text-center">
+              </div>
+              <!-- Right side: Products -->
+              <div class="right-side ps-5 text-center">
+                <% order.products.forEach((product) => { %>
                   <div class="product-image pt-3">
-
                     <img src="/assets/product/sharpedproduct/<%= product.productId.images[0] %>"
                       alt="<%= product.name %> Image" style="height: 150px; width: 150px;">
-
                   </div>
                   <div class="status-and-cancel">
-                    <div class="status text-warning">
-                      <%= product.status %>
-                    </div>
-                   <div>
-                  <% if( product.status =='placed'){ %>
-                    <button class="btn-danger" onclick="cancelOrder('<%= order._id %>','<%= product.productId._id %>')">Cancel</button>
-                    <% }else if(product.status == 'delivered'){ %>
-                      <button class="btn-danger">return</button>
-                      <%} else if(product.status == 'shipped'){ %>
+                    <div class="status text-warning"><%= product.status %></div>
+                    <div>
+                      <% if (product.status == 'placed') { %>
                         <button class="btn-danger" onclick="cancelOrder('<%= order._id %>','<%= product.productId._id %>')">Cancel</button>
-                        <%} else if(product.status == 'outfordelivery'){%>
-                          <button class="btn-danger" onclick="cancelOrder('<%= order._id %>','<%= product.productId._id %>')">Cancel</button>
-                    <% }else{ %>
-                      <input type="hidden">
-                      <%}%>
-                   </div>
+                      <% } else if (product.status == 'delivered') { %>
+                        <button class="btn-danger">Return</button>
+                      <% } else if (product.status == 'shipped') { %>
+                        <button class="btn-danger" onclick="cancelOrder('<%= order._id %>','<%= product.productId._id %>')">Cancel</button>
+                      <% } else if (product.status == 'outfordelivery') { %>
+                        <button class="btn-danger" onclick="cancelOrder('<%= order._id %>','<%= product.productId._id %>')">Cancel</button>
+                      <% } else { %>
+                        <input type="hidden">
+                      <% } %>
+                    </div>
                   </div>
-                </div>
+                <% }) %>
               </div>
             </div>
           </div>
         </div>
-        <% }) %>
-          <% }) %>
-            <% } %>
-          </div>
+      </div>
+    <% }) %>
+  <% } %>
+</div>
 
-
-
-              <!-- Your existing style -->
-
-
-
-
-
-
-
-
-              <footer class="footer-section ">
-                <div class="container relative">
-                  <div class="row">
-                    <div class="col-lg-8">
-                      <div class="subscription-form">
-                        <h3 class="d-flex align-items-center"><span class="me-1"><img src="assets/envelope-outline.svg"
-                              alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
-
-                        <form action="#" class="row g-3">
-                          <div class="col-auto">
-                            <input type="text" class="form-control" placeholder="Enter your name">
-                          </div>
-                          <div class="col-auto">
-                            <input type="email" class="form-control" placeholder="Enter your email">
-                          </div>
-                          <div class="col-auto">
-                            <button class="btn btn-primary">
-                              <span class="fa fa-paper-plane"></span>
-                            </button>
-                          </div>
-                        </form>
-
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="row g-5 mb-5">
-                    <div class="col-lg-4">
-                      <div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
-                      <p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus
-                        malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.
-                        Pellentesque habitant</p>
-
-                      <ul class="list-unstyled custom-social">
-                        <li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
-                        <li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
-                        <li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
-                        <li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
-                      </ul>
-                    </div>
-
-                    <div class="col-lg-8">
-                      <div class="row links-wrap">
-                        <div class="col-6 col-sm-6 col-md-3">
-                          <ul class="list-unstyled">
-                            <li><a href="#">About us</a></li>
-                            <li><a href="#">Services</a></li>
-                            <li><a href="#">Blog</a></li>
-                            <li><a href="#">Contact us</a></li>
-                          </ul>
-                        </div>
-
-                        <div class="col-6 col-sm-6 col-md-3">
-                          <ul class="list-unstyled">
-                            <li><a href="#">Support</a></li>
-                            <li><a href="#">Knowledge base</a></li>
-                            <li><a href="#">Live chat</a></li>
-                          </ul>
-                        </div>
-
-                        <div class="col-6 col-sm-6 col-md-3">
-                          <ul class="list-unstyled">
-                            <li><a href="#">Jobs</a></li>
-                            <li><a href="#">Our team</a></li>
-                            <li><a href="#">Leadership</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
-                          </ul>
-                        </div>
-
-                        <div class="col-6 col-sm-6 col-md-3">
-                          <ul class="list-unstyled">
-                            <li><a href="#">Nordic Chair</a></li>
-                            <li><a href="#">Kruzo Aero</a></li>
-                            <li><a href="#">Ergonomic Chair</a></li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-
-                  <div class="border-top copyright">
-                    <div class="row pt-4">
-                      <div class="col-lg-6">
-                        <p class="mb-2 text-center text-lg-start">Copyright &copy;
-                          <script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash;
-                          Designed
-                          with love by <a href="https://untree.co">Untree.co</a> Distributed By <a
-                            href="https://themewagon.com">ThemeWagon</a>
-                          <!-- License information: https://untree.co/license/ -->
-                        </p>
-                      </div>
-
-                      <div class="col-lg-6 text-center text-lg-end">
-                        <ul class="list-unstyled d-inline-flex ms-auto">
-                          <li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
-                          <li><a href="#">Privacy Policy</a></li>
-                        </ul>
-                      </div>
-
-                    </div>
-                  </div>
-
-                </div>
-              </footer>
 <script>
-  function cancelOrder(orderId,productId){
+  function cancelOrder(orderId, productId) {
     console.log("hi");
-    const data = {orderId,productId}
+    const data = { orderId, productId };
     Swal.fire({
-      icon:'warning',
-      text:'Are you sure',
-      showCancelButton:true,
-      confirmButtonText:'yes',
-      cancelButtonText:'no',
-      cancelButtonColor:'#d33',
-      confirmButtonColor:"#3085d6"
-    }).then((response)=>{
-      if(response.isConfirmed){
+      icon: 'warning',
+      text: 'Are you sure',
+      showCancelButton: true,
+      confirmButtonText: 'yes',
+      cancelButtonText: 'no',
+      cancelButtonColor: '#d33',
+      confirmButtonColor: "#3085d6"
+    }).then((response) => {
+      if (response.isConfirmed) {
         $.ajax({
-          url:"/cancelOrder",
-          method:'POST',
-          data:JSON.stringify(data),
-          contentType:"application/json",
-          success:function(response){
-            if(response.cancel==true){
+          url: "/cancelOrder",
+          method: 'POST',
+          data: JSON.stringify(data),
+          contentType: "application/json",
+          success: function (response) {
+            if (response.cancel == true) {
               Swal.fire({
-                icon:'success',
-                text:'Your order cancelled'
-              }).then((response)=>{
-                if(response.isConfirmed){
+                icon: 'success',
+                text: 'Your order cancelled'
+              }).then((response) => {
+                if (response.isConfirmed) {
                   $('#reloadreload').load('/myOrders  #reloadreload')
                 }
               })
-              
             }
           }
         })
@@ -334,4 +196,5 @@
     })
   }
 </script>
-              <%- include("../layouts/user/footer.ejs") -%>
+
+<%- include("../layouts/user/footer.ejs") -%>

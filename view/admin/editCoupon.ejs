@@ -18,7 +18,7 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item active ">
+                <li class="menu-item  ">
                     <a class="menu-link" href="/admin/products">
                         <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products</span>
@@ -46,7 +46,7 @@
                     </a>
 
                 </li>
-                <li class="menu-item ">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/coupons"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Coupons</span>
                     </a>
@@ -140,77 +140,36 @@
                 <div class="row">
                     <div class="col-12 col-md-9">
                         <div class="content-header">
-                            <h2 class="content-title">Add New Product</h2>
+                            <h2 class="content-title">Edit Coupon</h2>
                         </div>
                     </div>
                     <div class="col-12 col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="" method="post" enctype="multipart/form-data"
-                                    onsubmit="return validateForm()">
-                                    <div class="form-group">
-                                        <label for="product_title">Product Name</label>
-                                        <input type="text" class="form-control" id="product_title" name="name"
-                                            placeholder="Type here">
-                                    </div>
+                                <form action="" method="post">
+                                    <label for="form-label">Name</label>
+                                    <input type="text" name="name" value="<%= coupon.name %>" class="form-control">
 
-                                    <div class="form-group">
-                                        <label for="product_title">Previous Price</label>
-                                        <input type="text" class="form-control" id="previous_price"
-                                            name="previous_price" placeholder="Type here">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Price</label>
-                                        <input type="text" class="form-control" id="price" name="price"
-                                            placeholder="Type here">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="quantity">Quantity</label>
-                                        <input type="number" class="form-control" id="quantity" name="quantity"
-                                            placeholder="Type here">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Category</label>
-                                        <select class="form-control" id="product-category" name="category">
-                                            <% for (let i=0; i < categories.length; i++) { %>
-                                                <option value="<%= categories[i]._id %>">
-                                                    <%= categories[i].name %>
-                                                </option>
-                                                <% } %>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Description</label>
-                                        <textarea class="form-control" rows="4" id="description" name="description"
-                                            placeholder="Type here"></textarea>
-                                    </div>
+                                    <label for="form-label">Activation date</label>
+                                    <input type="date" name="adate" value="<%= coupon.activationDate.toISOString().split('T')[0] %>" class="form-control">
 
-                                    <div class="form-group">
-                                        <label for="">Product Images</label>
-                                        <div class="row">
-                                            <% for(let i=1 ; i<=4;i++){ %>
-                                                <div class="col-lg-6 col-md-6 mb-3 rounded-image-preview">
-                                                    <label for="imageInput<%= i %>" class="image-label">Image <%= i %>
-                                                            <div class="rounded-image-preview">
-                                                                <img id="imagePreview<%= i %>" alt="Preview"
-                                                                    style="height: 150px; width: 150px;">
-                                                            </div>
-                                                            <input name="images" type="file" accept="image/*"
-                                                                id="imageInput<%= i %>" class="imageInput"
-                                                                onchange="previewImage(this, 'imagePreview<%= i %>')">
-                                                    </label>
-                                                    <!-- Button to invoke the cropper modal -->
-                                                </div>
-                                                <%}%>
-                                        </div>
-                                    </div>
+                                    <label for="form-label">Expire date</label>
+                                    <input type="date" name="edate" value="<%= coupon.expiryDate.toISOString().split('T')[0] %>" class="form-control">
 
+                                    <label for="form-label">Limit of use</label>
+                                    <input type="text" name="limit" value="<%= coupon.limitOfUse %>"
+                                        class="form-control">
 
-                                    <div class="form-group mt-3">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                        <a href="products" class="btn btn-primary">
-                                            <span class="text">Back</span>
-                                        </a>
+                                    <label for="form-label">Dicount amount</label>
+                                    <input type="text" name="damount" value="<%= coupon.discountAmount %>"
+                                        class="form-control">
+                       
+                                    <input type="hidden" value="<%= coupon._id%>" name="id" id="">
+
+                                    <div class="modal-footer">
+                                        <a href="/admin/coupons"> <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Back</button></a> 
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
                                     </div>
                                 </form>
                             </div>
@@ -236,72 +195,6 @@
         </footer>
         <!-- footer end -->
     </main>
-
-
-    <script>
-
-        function validateForm() {
-            let name = document.getElementById('product_title').value;
-            let previous_price = document.getElementById('previous_price').value;
-            let price = document.getElementById('price').value;
-            let quantity = document.getElementById('quantity').value;
-            let category = document.getElementById('product-category').value;
-            let description = document.getElementById('description').value;
-            let lettersAndNumbersRegex = /^[A-Za-z0-9 ]+$/;
-            if (!name || !previous_price || !price || !quantity || !category || !description) {
-                alert('Please fill all fields.');
-                return false;
-            } else if (name.trim() === "" || quantity.trim() === "" || price.trim() === "" || description.trim() === "") {
-                alert("Please fill properly, remove blank names.");
-                return false;
-            } else if (!lettersAndNumbersRegex.test(name)) {
-                console.log("helo");
-                alert('Product name should contain only letters');
-                return false;
-            }
-            else if (description.length <= 20) {
-                alert("please fill desc more than 20 letters");
-                return false
-            }
-            else if (!Number.isInteger(Number(quantity))) {
-                alert('Quantity must be an integer');
-                return false;
-            }
-            else if (!Number.isInteger(Number(price))) {
-                alert('Price must be an integer');
-                return false;
-            } else if (Number(quantity) <= 0) {
-                alert('Quantity must be a positive number');
-                return false;
-            } else if (Number(price) <= 0) {
-                alert('Price must be a positive number');
-                return false;
-            }
-
-            else {
-                return true;
-            }
-        }
-    </script>
-
-    <script>
-        function previewImage(input, imageId) {
-            const preview = document.getElementById(imageId);
-            const file = input.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                };
-
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = "/assets/images/add Image.jpg";
-            }
-        }
-    </script>
     <%- include("../layouts/admin/footer.ejs") -%>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>

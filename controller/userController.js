@@ -117,6 +117,8 @@ const sendOtpVerificationMail = async ({ email }, res) => {
     const otp = `${Math.floor(1000 + Math.random() * 9000
     )}`;
 
+    console.log(otp);
+
     const emailOptions = {
       from: 'peeru548@gmail.com',
       to: email,
@@ -192,16 +194,13 @@ const verifyOtp = async (req, res) => {
         res.redirect('/login')
       } else {
         console.log("user blocked from this site");
-
-
         req.flash('blocked', 'you are blocked from this contact with admin');
         res.redirect(`/otp?email=${email}`)
-
       }
     } else {
-      console.log("otp incorrect else worked")
       req.flash('incorrect', 'otp is incorrect');
       res.redirect(`/otp?email=${email}`)
+      console.log("otp incorrect else worked")
     }
   }
   catch (error) {
@@ -426,29 +425,31 @@ const loadeditAddress = async (req, res) => {
     const addressId = req.query.id;
     const index = req.query.index
     const userId = req.session.user?._id
-    const user = await User.findOne({_id:userId})
-    const address = user.addresses.find((address)=> address._id == addressId)
-    res.render('editAddress',{address,index})
+    const user = await User.findOne({ _id: userId })
+    const address = user.addresses.find((address) => address._id == addressId)
+    res.render('editAddress', { address, index })
   } catch (error) {
     console.log(error.message);
   }
 }
 
-const editAddress = async (req,res)=>{
+const editAddress = async (req, res) => {
   try {
     const userId = req.session.user?._id
     const index = req.query.index
-    const {id,name,state,city,pin,phone} = req.body;
+    const { id, name, state, city, pin, phone } = req.body;
     const updateAddress = await User.findByIdAndUpdate(
-      {_id:userId},
-      {$set:{
-        [`addresses.${index}.name`]: name,
-        [`addresses.${index}.state`]: state,
-        [`addresses.${index}.city`]: city,
-        [`addresses.${index}.pin`]: pin,
-        [`addresses.${index}.phone`]: phone
-      }}
-      )
+      { _id: userId },
+      {
+        $set: {
+          [`addresses.${index}.name`]: name,
+          [`addresses.${index}.state`]: state,
+          [`addresses.${index}.city`]: city,
+          [`addresses.${index}.pin`]: pin,
+          [`addresses.${index}.phone`]: phone
+        }
+      }
+    )
     res.redirect('/profile')
   } catch (error) {
     console.log(error.message);
@@ -556,9 +557,9 @@ const removeAddress = async (req, res) => {
 const loadCheckout = async (req, res) => {
   try {
     const userid = req.session.user._id
-    const user = await User.findOne({_id:userid})
-    const cart = await Cart.findOne({userId:userid}).populate('products.productId')
-    res.render('checkout',{user:user,cart:cart.products})
+    const user = await User.findOne({ _id: userid })
+    const cart = await Cart.findOne({ userId: userid }).populate('products.productId')
+    res.render('checkout', { user: user, cart: cart.products })
   } catch (error) {
     console.log(error.message);
   }

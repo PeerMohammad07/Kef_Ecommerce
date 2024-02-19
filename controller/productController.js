@@ -71,7 +71,7 @@ const addProduct = async (req, res) => {
         price: details.price,
         category: details.category,
         description: details.description,
-        stock : details.quantity,
+        stock: details.quantity,
         images: arrimages
       })
       await product.save()
@@ -209,9 +209,9 @@ const loadShop = async (req, res) => {
   try {
     let id = req.query.id
     if (req.query.id) {
-      products = await Product.find({ category: id,is_Listed:false }).populate("category")
+      products = await Product.find({ category: id, is_Listed: false }).populate("category")
     } else {
-      products = await Product.find({is_Listed:false}).populate("category")
+      products = await Product.find({ is_Listed: false }).populate("category")
     }
     res.render('shop', { products, category })
   } catch (error) {
@@ -247,7 +247,7 @@ const productView = async (req, res) => {
 
 
     res.render('productDetails', { product, relatedProduct, inCart: false });
-    
+
   } catch (error) {
     console.log(error.message);
     res.render('errorPage', { errorMessage: 'An error occurred while loading the product details.' });

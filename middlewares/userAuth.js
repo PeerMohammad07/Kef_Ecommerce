@@ -3,7 +3,7 @@
     if(req.session.user){
       res.redirect('/')
     }else{
-      next()
+      res.redirect('/login')
     }
   } 
   catch (error) {
@@ -11,12 +11,12 @@
   }
  }
 
- const isLogout = async(req,res)=>{
+ const isLogout = async(req,res,next)=>{
   try {
-    if(req.session.user){
-      next()
+    if(!req.session.user){
+      res.redirect('/login')
     }else{
-      redirect('/')
+      next()
     }
   } catch (error) {
     console.log(error.message);

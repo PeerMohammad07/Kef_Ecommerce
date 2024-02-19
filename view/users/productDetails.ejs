@@ -896,7 +896,6 @@
 
 <script>
   function addToCart(id) {
-    console.log("hello");
     const productQuantity = document.getElementById('number').value
     const data = { productQuantity: productQuantity, productId: id }
     $.ajax({
@@ -906,6 +905,7 @@
       contentType: 'application/json',
       success: function (response) {
         if (response.login == true) {
+          console.log("helo");
           Swal.fire({
             icon: 'warning',
             title: 'Please Login',

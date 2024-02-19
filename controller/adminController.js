@@ -161,34 +161,36 @@ const loadDashboard = async (req, res) => {
     }))
 
     monthlySalesData = await Order.aggregate([
-      {$unwind:'$products'},
-
-      {$match:{
-       "products.status" :"delivered",
-       status:{$ne:'cancelled'},
-       date:{$gte:new Date(currentYear, 0, 1)}
-      }},
+      { $unwind: '$products' },
 
       {
-        $group:{
-          _id:{$month:'$date'},
-          total:{$sum:"$totalAmount"},
-          countt:{$sum:1}
+        $match: {
+          "products.status": "delivered",
+          status: { $ne: 'cancelled' },
+          date: { $gte: new Date(currentYear, 0, 1) }
         }
       },
-     {
-      $project:{
-        _id:0,
-        month:'$_id',
-        total:'$total',
-        count:'$countt'
+
+      {
+        $group: {
+          _id: { $month: '$date' },
+          total: { $sum: "$totalAmount" },
+          countt: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          total: '$total',
+          count: '$countt'
+        }
       }
-     }
     ])
-    
-    const updatedMonthlyValue = defaultMonthly.map((defaultMonth)=>{
-      const foundMonth = monthlySalesData.find((monthdata)=>{
-       return monthdata.month == defaultMonth.month
+
+    const updatedMonthlyValue = defaultMonthly.map((defaultMonth) => {
+      const foundMonth = monthlySalesData.find((monthdata) => {
+        return monthdata.month == defaultMonth.month
       })
       return foundMonth || defaultMonth
     })
@@ -197,14 +199,14 @@ const loadDashboard = async (req, res) => {
     const currentDate = new Date();
     const fifteenDaysAgo = new Date();
     fifteenDaysAgo.setDate(currentDate.getDate() - 15);
-    
+
     // Generate an array with all days in the last 15 days
     const allDays = Array.from({ length: 15 }, (_, index) => {
       const day = new Date();
       day.setDate(fifteenDaysAgo.getDate() + index);
       return { day: day.getDate(), total: 0, count: 0 };
     });
-    
+
     fiftyDaysSales = await Order.aggregate([
       { $unwind: '$products' },
       {
@@ -230,46 +232,63 @@ const loadDashboard = async (req, res) => {
         },
       },
     ]);
-    
+
     const mergedData = allDays.map((dayData) => {
       const foundData = fiftyDaysSales.find((data) => data.day === dayData.day);
       return foundData || dayData;
     });
+
+
+
+    const codCount = await Order.aggregate([
+      {
+        $match: {
+          paymentMethod: 'COD',
+          status: { $ne: 'cancelled' }
+        }
+      }, {
+        $group: {
+          _id: null,
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const COD = codCount[0].count || 0
+
+    const Razorpay = await Order.aggregate([
+      {
+        $match: {
+          paymentMethod: 'razorpay',
+          status: { $ne: 'cancelled' }
+        }
+      }, {
+        $group: {
+          _id: null,
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const razorpay = Razorpay[0].count || 0
+
+
+    const Wallet = await Order.aggregate([
+      {
+        $match: {
+          paymentMethod: 'wallet',
+          status: { $ne: 'cancelled' }
+        }
+      }, {
+        $group: {
+          _id: null,
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const wallet = Wallet[0].count || 0
     
-
-
-const codCount = await Order.aggregate([
-  {
-    $match: {
-      paymentMethod: 'COD',
-      status: { $ne: 'cancelled' }
-    }
-  },{
-    $group:{
-      _id:null,
-      count:{$sum:1}
-    }
-  }
-]);
- 
-const COD = codCount[0].count || 0
-
-const Razorpay = await Order.aggregate([
-  {
-    $match: {
-      paymentMethod: 'razorpay',
-      status: { $ne: 'cancelled' }
-    }
-  },{
-    $group:{
-      _id:null,
-      count:{$sum:1}
-    }
-  }
-]);
-
-const razorpay = Razorpay[0].count || 0
-
 
     res.render('adminDashboard',
       {
@@ -290,6 +309,7 @@ const razorpay = Razorpay[0].count || 0
         updatedMonthlyValue,
         COD,
         razorpay,
+        wallet,
         mergedData
       })
   } catch (error) {
@@ -373,8 +393,8 @@ const loadCreateReport = async (req, res) => {
   try {
     const startDate = req.body.startDate;
     const endDate = req.body.endDate;
-    const orders = await Order.find({date:{$gte:startDate,$lte:endDate}}).populate('userId').populate('products.productId')
-    res.render('report',{orders})
+    const orders = await Order.find({ date: { $gte: startDate, $lte: endDate } }).populate('userId').populate('products.productId')
+    res.render('report', { orders })
   } catch (error) {
     console.log(error.message);
   }
@@ -395,4 +415,5 @@ module.exports = {
   changeOrderStatus,
   cancelOrder,
   loadCreateReport,
+
 }
