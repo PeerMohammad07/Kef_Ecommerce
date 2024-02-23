@@ -4,15 +4,17 @@ const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
 const userOtpVerification = require('../model/userOTPverification')
 const product = require('../model/productsModal')
+const Banner = require('../model/bannerModal')
 const Token = require('../model/tokenModal')
 const crypto = require('crypto')
 // loading Home
 const loadHome = async (req, res) => {
   try {
     const id = req.session.user
-    const user = await User.findOne({ _id: id })
+    const banners = await Banner.find({isBlocked:false})
+    const user = await User.findOne({ _id: id ,Blocked:false})
     const productDetails = await product.find({})
-    res.render('home', { products: productDetails, user: user })
+    res.render('home', { products: productDetails, user: user ,banners:banners})
   } catch (error) {
     console.log(error.message);
   }
@@ -108,8 +110,8 @@ const sendOtpVerificationMail = async ({ email }, res) => {
       port: 465,
       secure: true,
       auth: {
-        user: 'peeru548@gmail.com',
-        pass: 'mxdh kfpy qfjy simq'
+        user: process.env.otp_EMAIL,
+        pass: process.env.nodemailer_PASS
       }
     })
 
@@ -117,7 +119,6 @@ const sendOtpVerificationMail = async ({ email }, res) => {
     const otp = `${Math.floor(1000 + Math.random() * 9000
     )}`;
 
-    console.log(otp);
 
     const emailOptions = {
       from: 'peeru548@gmail.com',

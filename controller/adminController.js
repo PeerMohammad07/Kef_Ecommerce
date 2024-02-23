@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt")
 const Order = require('../model/orderModal')
 const Product = require("../model/productsModal")
 const Category = require('../model/categoryModal')
+const Coupon = require('../model/couponModal')
 
 // loading admin LOgin 
 const AdminLogin = async (req, res) => {
@@ -232,12 +233,10 @@ const loadDashboard = async (req, res) => {
         },
       },
     ]);
-
     const mergedData = allDays.map((dayData) => {
       const foundData = fiftyDaysSales.find((data) => data.day === dayData.day);
       return foundData || dayData;
     });
-
 
 
     const codCount = await Order.aggregate([
@@ -335,11 +334,27 @@ const blockUser = async (req, res) => {
 
 const loadOrder = async (req, res) => {
   try {
+    let page = 1
+    if(req.query.id){
+      page = req.query.id
+    }
+
+    let next = page + 1
+    let previous = page>1? page-1 : 1
+    let limit = 8;
+
+    let count  = await Order.find().count()
+
+    let totalPages = Math.ceil(count/limit)
+
     const order = await Order.find({})
       .populate('userId')
       .populate('products.productId')
       .sort({ date: -1 })
-    res.render('adminOrders', { order: order })
+      .limit(limit)
+      .skip((page-1)*limit)
+      .exec()
+    res.render('adminOrders', { order: order ,next,previous,totalPages})
   } catch (error) {
     console.log(error.message);
   }
@@ -400,6 +415,39 @@ const loadCreateReport = async (req, res) => {
   }
 }
 
+const changeReturnStatus = async(req,res)=>{
+  try {
+    const {orderId, productId, status, userId} =req.body
+    if(status == 'returned'){
+      const user = await User.findOne({_id:userId})
+      if(user){
+        const order = await Order.findOne({_id:orderId})
+        const productDetails = await Order.findOne(
+          { _id: orderId, 'products.productId': productId },
+          { 'products.$': 1 }
+        ).populate('products.productId')
+      
+        const amount = productDetails.products[0].productId.price * productDetails.products[0].quantity - order.couponApplied ;
+        await User.findByIdAndUpdate({_id:userId},{$inc:{wallet:amount}})
+        await Order.findOneAndUpdate(
+          {_id:orderId,'products.productId':productId},
+          {'products.$.status':status}
+        )
+        await Product.findOneAndUpdate({_id:productId},{$inc:{stock:1}})
+        res.json({changed:true})
+      }
+    }else{
+      await Order.findOneAndUpdate(
+        {_id:orderId,'products.productId':productId},
+        {'products.$.status':status}
+      )
+      res.json({changed:true})
+    }
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 
 
@@ -415,5 +463,5 @@ module.exports = {
   changeOrderStatus,
   cancelOrder,
   loadCreateReport,
-
+  changeReturnStatus
 }

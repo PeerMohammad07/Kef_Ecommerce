@@ -4,6 +4,7 @@ const Order = require('../model/orderModal')
 const Product = require('../model/productsModal')
 const Razorpay = require('razorpay');
 const product = require('../model/productsModal');
+const Coupon = require('../model/couponModal')
 const crypto = require('crypto')
 
 var instance = new Razorpay({
@@ -16,8 +17,10 @@ const placeOrder = async (req, res) => {
     const {
       index,
       payment,
-      subTotal
+      subTotal,
+      couponCode
     } = req.body;
+
     const userid = req.session.user._id;
     const cart = await Cart.findOne({ userId: userid }).populate('products.productId')
     const products = cart.products;
@@ -43,16 +46,25 @@ const placeOrder = async (req, res) => {
         date: date,
         status: status,
         deliveryAddress: address,
-        paymentMethod: payment
+        paymentMethod: payment,
       })
       const oderDetails = await order.save()
       const orderId = oderDetails._id;
+
+      const coupon = await Coupon.findOne({couponCode:couponCode})
+      if(coupon){
+        coupon.userUsed.push({userId:userid})
+        await coupon.save()
+        let discount = 0;
+        const disc = coupon.discountAmount/cart.products.length
+        discount = Math.round(disc)
+        await Order.findByIdAndUpdate({_id:orderId},{$set:{couponApplied:discount}})
+      }
 
       //if the payment is cod
       if (oderDetails.status == 'placed') {
         await Cart.deleteOne({ userId: userid })
         for (let i = 0; i < products.length; i++) {
-
           const productId = products[i].productId;
           const productQuantity = products[i].quantity;
           await Product.updateOne({ _id: productId }, { $inc: { stock: -productQuantity } })
@@ -147,7 +159,10 @@ const cancelOrder = async (req, res) => {
       { 'products.$': 1 }
     ).populate('products.productId')
 
-    const total = productDetails.products[0].productId.price * productDetails.products[0].quantity;
+
+      const total = orderDetails.couponApplied? productDetails.products[0].productId.price * productDetails.products[0].quantity - orderDetails.couponApplied : productDetails.products[0].productId.price * productDetails.products[0].quantity
+      console.log(total);
+    
     if(orderDetails.paymentMethod == 'razorpay' || orderDetails.paymentMethod == 'wallet'){
       const user  = await User.findOne({_id:userId})
       user.wallet += total
@@ -173,7 +188,7 @@ const verifyPayment = async (req, res) => {
   try {
     const { payment, order } = req.body;
     const userId = req.session.user?._id
-    const hmac = crypto.createHmac("sha256", "RoKLB9O83abv125T0hrpSIA0");
+    const hmac = crypto.createHmac("sha256", process.env.razorpay_SECRET);
     hmac.update(payment.razorpay_order_id + "|" + payment.razorpay_payment_id);
     const hmacValue = hmac.digest("hex");
     if (hmacValue === payment.razorpay_signature) {
@@ -195,6 +210,21 @@ const verifyPayment = async (req, res) => {
   }
 }
 
+const returnRequest = async(req,res)=>{
+  try {
+    const {orderId,productId,reason}=req.body;
+    const userid = req.session.user?._id
+    if(userid){
+      await Order.findOneAndUpdate({_id:orderId,'products.productId':productId},
+      {'products.$.returnReason':reason,
+       'products.$.status':'returnRequested'
+      })
+      res.json({Return:true})
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 module.exports = {
   placeOrder,
@@ -202,5 +232,6 @@ module.exports = {
   orderDetails,
   loadMyOrder,
   cancelOrder,
-  verifyPayment
+  verifyPayment,
+  returnRequest
 }

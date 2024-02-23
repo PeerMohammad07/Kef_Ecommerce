@@ -1,224 +1,247 @@
 <%- include("../layouts/admin/header.ejs") -%>
 
-<div class="screen-overlay"></div>
-<aside class="navbar-aside" id="offcanvas_aside">
-    <div class="aside-top">
-        <a class="brand-wrap">
-            KEF
-        </a>
-        <div>
-            <button class="btn btn-icon btn-aside-minimize"><i
-                    class="text-muted material-icons md-menu_open"></i></button>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a class="brand-wrap">
+                KEF
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i
+                        class="text-muted material-icons md-menu_open"></i></button>
+            </div>
         </div>
-    </div>
-    <nav>
-        <ul class="menu-aside">
-            <li class="menu-item ">
-                <a class="menu-link" href="/admin/dashboard">
-                    <i class="icon material-icons md-home"></i>
-                    <span class="text">Dashboard</span>
-                </a>
-            </li>
-            <li class="menu-item ">
-                <a class="menu-link" href="/admin/products">
-                    <i class="icon material-icons md-shopping_bag"></i>
-                    <span class="text">Products</span>
-                </a>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/dashboard">
+                        <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/products">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Products</span>
+                    </a>
 
-            </li>
+                </li>
 
-            <li class="menu-item">
-                <a class="menu-link" href="/admin/userms">
-                    <i class="icon material-icons md-person"></i>
-                    <span class="text">user managmnet</span>
-                </a>
-            </li>
-            <li class="menu-item  active">
-                <a class="menu-link" href="/admin/categories">
-                    <i class="icon material-icons md-shopping_bag"></i>
-                    <span class="text">Categories</span>
-                </a>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/userms">
+                        <i class="icon material-icons md-person"></i>
+                        <span class="text">user managmnet</span>
+                    </a>
+                </li>
+                <li class="menu-item  active">
+                    <a class="menu-link" href="/admin/categories">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Categories</span>
+                    </a>
 
-            </li>
-            <li class="menu-item ">
-                <a class="menu-link" href="/admin/orders">
-                    <i class="icon material-icons md-shopping_bag"></i>
-                    <span class="text">Orders</span>
-                </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/orders">
+                        <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Orders</span>
+                    </a>
 
-            </li>
-            <li class="menu-item ">
-                <a class="menu-link" href="/admin/coupons"> <i class="icon material-icons md-monetization_on"></i>
-                    <span class="text">Coupons</span>
-                </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/coupons"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Coupons</span>
+                    </a>
 
-            </li>
-            <li class="menu-item ">
-                <a class="menu-link" href="/admin/banners"> <i class="icon material-icons md-monetization_on"></i>
-                    <span class="text">Banners</span>
-                </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/banners"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Banners</span>
+                    </a>
 
-            </li>
-        </ul>
-        <hr />
-        <br />
-        <br />
-    </nav>
-</aside>
+                </li>
+            </ul>
+            <hr />
+            <br />
+            <br />
+        </nav>
+    </aside>
 
 
-<main class="main-wrap">
-  <header class="main-header navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container">
-          <div class="head-title">
-              <div class="left">
-                  <h1>Categories</h1>
-              </div>
-          </div>
-  
-          <div class="col-nav ml-auto">
-              <button class="btn btn-icon btn-mobile" data-trigger="#offcanvas_aside">
-                  <i class="material-icons md-apps"></i>
-              </button>
-              <ul class="nav">
-                  <li class="nav-item">
-                      <a class="nav-link btn-icon" href="#">
-                          <i class="material-icons md-notifications animation-shake"></i>
-                          <span class="badge rounded-pill">3</span>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link btn-icon darkmode" href="#">
-                          <i class="material-icons md-nights_stay"></i>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a href="#" class="requestfullscreen nav-link btn-icon">
-                          <i class="material-icons md-cast"></i>
-                      </a>
-                  </li>
-                  <li class="dropdown nav-item">
-                      <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage"
-                          aria-expanded="false"><i class="material-icons md-/public"></i></a>
-                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                          <a class="dropdown-item text-brand" href="#"><img
-                                  src="/imgs/theme/flag-us.png" alt="English" />English</a>
-                          <a class="dropdown-item" href="#"><img src="/imgs/theme/flag-fr.png"
-                                  alt="Français" />Français</a>
-                          <a class="dropdown-item" href="#"><img src="/imgs/theme/flag-jp.png"
-                                  alt="Français" />日本語</a>
-                          <a class="dropdown-item" href="#"><img src="/imgs/theme/flag-cn.png"
-                                  alt="Français" />中国人</a>
-                      </div>
-                  </li>
-                  <li class="dropdown nav-item">
-                      <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
-                          aria-expanded="false"> <img class="img-xs rounded-circle"
-                              src="/imgs/people/avatar-2.png" alt="User" /></a>
-                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                          <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit
-                              Profile</a>
-                          <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
-                              Settings</a>
-                          <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                          <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                          <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item text-danger" href="/admin/Logout"><i
-                                  class="material-icons md-exit_to_app"></i>Logout</a>
-                      </div>
-                  </li>
-              </ul>
-          </div>
-      </div>
-  </header>
+    <main class="main-wrap">
+        <header class="main-header navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <div class="head-title">
+                    <div class="left">
+                        <h1>Categories</h1>
+                    </div>
+                </div>
 
-          
+                <div class="col-nav ml-auto">
+                    <button class="btn btn-icon btn-mobile" data-trigger="#offcanvas_aside">
+                        <i class="material-icons md-apps"></i>
+                    </button>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link btn-icon" href="#">
+                                <i class="material-icons md-notifications animation-shake"></i>
+                                <span class="badge rounded-pill">3</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-icon darkmode" href="#">
+                                <i class="material-icons md-nights_stay"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="requestfullscreen nav-link btn-icon">
+                                <i class="material-icons md-cast"></i>
+                            </a>
+                        </li>
+                        <li class="dropdown nav-item">
+                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage"
+                                aria-expanded="false"><i class="material-icons md-/public"></i></a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                                <a class="dropdown-item text-brand" href="#"><img src="/imgs/theme/flag-us.png"
+                                        alt="English" />English</a>
+                                <a class="dropdown-item" href="#"><img src="/imgs/theme/flag-fr.png"
+                                        alt="Français" />Français</a>
+                                <a class="dropdown-item" href="#"><img src="/imgs/theme/flag-jp.png"
+                                        alt="Français" />日本語</a>
+                                <a class="dropdown-item" href="#"><img src="/imgs/theme/flag-cn.png"
+                                        alt="Français" />中国人</a>
+                            </div>
+                        </li>
+                        <li class="dropdown nav-item">
+                            <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                                aria-expanded="false"> <img class="img-xs rounded-circle"
+                                    src="/imgs/people/avatar-2.png" alt="User" /></a>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                                <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit
+                                    Profile</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
+                                    Settings</a>
+                                <a class="dropdown-item" href="#"><i
+                                        class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                                <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help
+                                    center</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="/admin/Logout"><i
+                                        class="material-icons md-exit_to_app"></i>Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </header>
 
-  <section class="content-main">
-      <div class="container-fluid">
-         
-          <div class="left">
-              <a href="addCategory" class="btn btn-success btn-download">
-                  <i class='bx bxs-plus-circle'></i>
-                  <span class="text">Add New Category</span>
-              </a>
-          </div>
-       
-          <!-- error -->
-<% if (messages.error) { %>
-    <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img" aria-label="Warning:">
-          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-        </svg>
-        <div >
-            <strong>Hey !</strong>
-          <%= messages.error %>
-        </div>
-      </div>
-<% } %> 
-<!-- error -->
 
-              <p id="message" style="color: rgb(255, 0, 0);">
-                
-              </p>
-              <script>
-                  // Set a timer to remove the message after 5000 milliseconds (5 seconds)
-                  setTimeout(function () {
-                      var messageElement = document.getElementById('message');
-                      if (messageElement) {
-                          messageElement.style.display = 'none';
-                      }
-                  }, 3500);
-              </script>
-        
-          
-          <div class="card mt-4">
-              <div class="table-data">
-                  <div class="order">
-                      
-                          <div class="table-responsive" id="reloadArea">
-                              <table id="tablePagination" class="table table-bordered table-hover table-striped">
-                                  <thead class="thead-dark">
-                                      <tr>
-                                          <th scope="col"><center>Sl.No.</center></th>
-                                          <th scope="col"><center>Name</center></th>
-                                          <th scope="col"><center>Description</center></th>
-                                          <th scope="col"><center>Edit</center></th>
-                                          <th scope="col"><center>List/Unlist</center></th>
-                                      </tr>
-                                  </thead>
-                                  <tbody>
-                                    <% if(category.length>0){ %>
-                                        <% if(category.map((value,index)=>{ %>
-                                          <tr>
-                                              <td align="center"><%= index+1 %></td>
-                                              <td align="center"><%= value.name%></td>
-                                              <td align="center"><%= value.description%></td>
-                                              <td align="center"><a href="/admin/editCategory?id=<%= value._id%>"><i class="fas fa-edit fa-lg mx-1"></i></a></a></td>
-                                              <td align="center">
-                                                <a class="btn btn-sm btn-danger rounded font-sm mt-15 text-white"  data-user-id="<%= value._id  %>" data-initial-status="<%= value.is_listed %>" onclick="block('<%= value._id %>')" >
-                                                    <%= value.isListed?"Unlist":"List"  %>
-                                                    </a>
-                                              </td>
-                                          </tr>
-                                          <% })) %>
-                              <% } else{ %>
-                              
-                                  </tbody>
-                              </table>
-                          </div>
-                     
-                          <p>No users found in the database.</p>
-                          <% } %>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </section>
-  
-  <!-- content-main end// -->
-  <!-- <footer class="main-footer font-xs">
+
+        <section class="content-main">
+            <div class="container-fluid">
+                <div class="left">
+                    <a href="addCategory" class="btn btn-success btn-download">
+                        <i class='bx bxs-plus-circle'></i>
+                        <span class="text">Add New Category</span>
+                    </a>
+                </div>
+                <!-- error -->
+                <% if (messages.error) { %>
+                    <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                            class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img"
+                            aria-label="Warning:">
+                            <path
+                                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                        </svg>
+                        <div>
+                            <strong>Hey !</strong>
+                            <%= messages.error %>
+                        </div>
+                    </div>
+                    <% } %>
+                        <!-- error -->
+                        <p id="message" style="color: rgb(255, 0, 0);">
+                        </p>
+                        <script>
+                            // Set a timer to remove the message after 5000 milliseconds (5 seconds)
+                            setTimeout(function () {
+                                var messageElement = document.getElementById('message');
+                                if (messageElement) {
+                                    messageElement.style.display = 'none';
+                                }
+                            }, 3500);
+                        </script>
+
+
+                        <div class="card mt-4">
+                            <div class="table-data">
+                                <div class="order">
+
+                                    <div class="table-responsive" id="reloadArea">
+                                        <table id="tablePagination"
+                                            class="table table-bordered table-hover table-striped">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th scope="col">
+                                                        <center>Sl.No.</center>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <center>Name</center>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <center>Description</center>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <center>Edit</center>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <center>List/Unlist</center>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% if(category.length>0){ %>
+                                                    <% if(category.map((value,index)=>{ %>
+                                                        <tr>
+                                                            <td align="center">
+                                                                <%= index+1 %>
+                                                            </td>
+                                                            <td align="center">
+                                                                <%= value.name%>
+                                                            </td>
+                                                            <td align="center">
+                                                                <%= value.description%>
+                                                            </td>
+                                                            <td align="center"><a
+                                                                    href="/admin/editCategory?id=<%= value._id%>"><i
+                                                                        class="fas fa-edit fa-lg mx-1"></i></a></a></td>
+                                                            <td align="center">
+                                                                <a class="btn btn-sm btn-danger rounded font-sm mt-15 text-white"
+                                                                    data-user-id="<%= value._id  %>"
+                                                                    data-initial-status="<%= value.is_listed %>"
+                                                                    onclick="block('<%= value._id %>')">
+                                                                    <%= value.isListed?"Unlist":"List" %>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <% })) %>
+                                                            <% } else{ %>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <p>No users found in the database.</p>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+            </div>
+        </section>
+
+        <!-- content-main end// -->
+        <!-- <footer class="main-footer font-xs">
       <div class="row pb-30 pt-15">
           <div class="col-sm-6">
               <script>
@@ -231,48 +254,49 @@
           </div>
       </div>
   </footer> -->
-</main>
-<script src="/js/vendors/jquery-3.6.0.min.js"></script>
-<script src="/js/vendors/bootstrap.bundle.min.js"></script>
-<script src="/js/vendors/select2.min.js"></script>
-<script src="/js/vendors/perfect-scrollbar.js"></script>
-<script src="/js/vendors/jquery.fullscreen.min.js"></script>
+    </main>
+
+    <script src="/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/js/vendors/select2.min.js"></script>
+    <script src="/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/js/vendors/jquery.fullscreen.min.js"></script>
 
 
 
 
-<script>
-    function block(id){
-        console.log("hello");
-        const data = {id:id}
-        Swal.fire({
-            title:'Do you want list/unlist this Category',
-            icon :' warning',
-            confirmButtonText:'yes!',
-            confirmButtonColor:'#3085d6',
-            showCancelButton:'yes',
-            cancelButtonColor:'#d33'
-        }).then((result)=>{
-            if(result.isConfirmed){
-                $.ajax({
-                    method:'POST',
-                    url:'/admin/list-Unlist',
-                    data: JSON.stringify(data),
-                    contentType:'application/JSON',
-                    success:function(res){
-                        if(res.list===true){
-                            $('#reloadArea').load('/admin/categories #reloadArea')
-                        }else{
+    <script>
+        function block(id) {
+            console.log("hello");
+            const data = { id: id }
+            Swal.fire({
+                title: 'Do you want list/unlist this Category',
+                icon: ' warning',
+                confirmButtonText: 'yes!',
+                confirmButtonColor: '#3085d6',
+                showCancelButton: 'yes',
+                cancelButtonColor: '#d33'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '/admin/list-Unlist',
+                        data: JSON.stringify(data),
+                        contentType: 'application/JSON',
+                        success: function (res) {
+                            if (res.list === true) {
+                                $('#reloadArea').load('/admin/categories #reloadArea')
+                            } else {
 
+                            }
+                        }, error: function (error) {
+                            console.log(error);
                         }
-                    },error:function(error){
-                        console.log(error);
-                    }
-                })
+                    })
 
-            }
-    })
-    }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<%- include("../layouts/admin/footer.ejs") -%>
+                }
+            })
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <%- include("../layouts/admin/footer.ejs") -%>

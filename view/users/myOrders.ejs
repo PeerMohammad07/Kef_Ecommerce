@@ -140,12 +140,14 @@
                       <% if (product.status == 'placed') { %>
                         <button class="btn-danger" onclick="cancelOrder('<%= order._id %>','<%= product.productId._id %>')">Cancel</button>
                       <% } else if (product.status == 'delivered') { %>
-                        <button class="btn-danger">Return</button>
+                        <button class="btn-danger" onclick="Return('<%= order._id %>','<%= product.productId._id %>')" >Return</button>
                       <% } else if (product.status == 'shipped') { %>
                         <button class="btn-danger" onclick="cancelOrder('<%= order._id %>','<%= product.productId._id %>')">Cancel</button>
                       <% } else if (product.status == 'outfordelivery') { %>
                         <button class="btn-danger" onclick="cancelOrder('<%= order._id %>','<%= product.productId._id %>')">Cancel</button>
-                      <% } else { %>
+                        <% } else if (product.status == 'returnRequest') { %>
+                          
+                          <% } else { %>
                         <input type="hidden">
                       <% } %>
                     </div>
@@ -162,7 +164,7 @@
 
 <script>
   function cancelOrder(orderId, productId) {
-    console.log("hi");
+    console.log("hi",productId);
     const data = { orderId, productId };
     Swal.fire({
       icon: 'warning',
@@ -197,4 +199,38 @@
   }
 </script>
 
+<script>
+  function Return(orderId,productId){
+    Swal.fire({
+  title: 'Return reason',
+  input: 'text',
+  showCancelButton: true,
+  confirmButtonText: 'ok',
+  cancelButtonText: 'Close',
+  showLoaderOnConfirm: true,
+  position:'top',
+}).then((response)=>{
+  if(response.isConfirmed){
+    const data = {orderId:orderId,productId:productId,reason:response.value}
+      $.ajax({
+        method:'post',
+        url:'/returnRequest',
+        data:JSON.stringify(data),
+        contentType:'application/json',
+        success: function(response){
+          if(response.Return==true){
+              Swal.fire({
+                icon:'success',
+                title:'return requested',
+                showConfirmButton:false,
+                timer:2000
+              })
+            $('#reloadreload').load('/myOrders  #reloadreload')
+          }
+        }
+      })
+  }
+})
+  }
+</script>
 <%- include("../layouts/user/footer.ejs") -%>

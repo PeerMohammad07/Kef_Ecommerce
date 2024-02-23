@@ -14,7 +14,6 @@
 		</li>
 		<li><a class="nav-link" href="/shop">Shop</a></li>
 		<li><a class="nav-link" href="/about">About us</a></li>
-		<li><a class="nav-link" href="services.html">Services</a></li>
 		<li><a class="nav-link" href="/blog">Blog</a></li>
 		<li><a class="nav-link" href="/whishList">Whishlist</a></li>
 	</ul>
@@ -43,6 +42,79 @@
 
 </nav>
 <!-- End Header/Navigation -->
+<style>
+	/* Add this CSS to your stylesheet or in a style tag */
+.carousel-inner {
+    height: 500px; /* Adjust the height as needed */
+}
+
+.intro-slider-container {
+    height: 100%; /* Ensure the slider container takes the full height of the carousel item */
+}
+
+.intro-slide {
+    height: 100%; /* Ensure the slide takes the full height of the slider container */
+    background-size: cover; /* Adjust background size as needed */
+    /* Alternatively, you can use 'contain' or specific size values like '100% 100%' */
+}
+
+
+.intro-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Center content vertically within the slide */
+}
+
+.intro-subtitle,
+.intro-title,
+.btn {
+    /* Add any additional styling for these elements if needed */
+    color: #fff; /* Set text color to white or your preferred color */
+}
+
+</style>
+
+  <% if(locals.banners){ %>
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="5000">
+	<ol class="carousel-indicators">
+			<% banners.forEach(function(banner, index) { %>
+					<li data-target="#carouselExampleIndicators" data-slide-to="<%= index %>" <%= index === 0 ? 'class="active"' : '' %>></li>
+			<% }); %>
+	</ol>
+
+	<div class="carousel-inner">
+			<% banners.forEach(function(banner, index) { %>
+					<div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+							<div class="intro-slider-container">
+									<div class="intro-slide" style="background-image: url(/assets/banner/<%=banner.image%>); height: 500px;">
+											<div class="container intro-content">
+													<h3 class="intro-subtitle text-dark" ><%= banner.title %></h3>
+													<h1 class="intro-title text-dark"><%= banner.description %></h1>
+													<a href="/<%= banner.targetUrl %>" class="btn btn-warning">
+															<span>Shop Now</span>
+															<i class="icon-long-arrow-right"></i>
+													</a>
+											</div>
+									</div>
+							</div>
+					</div>
+			<% }); %>
+	</div>
+
+	<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="sr-only">Previous</span>
+	</a>
+
+	<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="sr-only">Next</span>
+	</a>
+</div>
+<%} else { %>
+
 
 <!-- Start Hero Section -->
 	<div class="hero">
@@ -64,7 +136,7 @@
 		</div>
 	</div>
 <!-- End Hero Section -->
-
+<%}%>
 <!-- Start Product Section -->
 <div class="product-section">
 	<div class="container">

@@ -1,0 +1,117 @@
+<%- include("../layouts/user/header.ejs") -%>
+<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark " arial-label="Furni navigation bar">
+
+	<div class="container">
+		<a class="navbar-brand" href="/">KEF<span>.</span></a>
+
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+<div class="collapse navbar-collapse" id="navbarsFurni">
+	<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+		<li class="nav-item ">
+			<a class="nav-link" href="/">Home</a>
+		</li>
+		<li><a class="nav-link" href="/shop">Shop</a></li>
+    <li><a class="nav-link" href="/whishList">Whishlist</a></li>
+    <li><a class="nav-link" href="/myOrders">My Orders</a></li>
+    <li><a class="nav-link" href="/myCoupons">My Coupons</a></li>
+	</ul>
+
+	<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+		
+<%if(locals.user){ %>
+	<div class="dropdown show">
+		<a class="btn  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<img src="/static/images/user.svg">
+		</a>
+	
+		<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+			<a class="dropdown-item text-light" href="/logout">Logout</a>
+			<a class="dropdown-item text-light" href="/profile">Profile</a>
+			<!-- <a class="dropdown-item" href="#"></a> -->
+		</div>
+	</div>
+	<%} else{%>
+		<li><a class="nav-link" href="/login"><img src="/static/images/user.svg"></a></li>
+		<%}%>
+		<li><a class="nav-link" href="/cart"><img src="/static/images/cart.svg"></a></li>
+	</ul>
+</div>
+</div>	
+
+</nav>
+
+<div class="container mt-4">
+  <div class="row">
+    <!-- Coupon Card 1 -->
+    <% if(locals.coupons) { %>
+      <% coupons.map(function(coupon){ %>
+        <%if(coupon.status==false){%>
+    <div class="col-md-4 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title"><%= coupon.name %></h5>
+          <p class="card-text">Activation Date: <%= coupon.activationDate.toLocaleDateString('en-US',
+            {
+            year:'numeric',
+            month: 'short'
+            ,
+            day: '2-digit'
+            }).replace(/\//g, '-'
+            ) %></p>
+          <p class="card-text">Expiry Date: <%= coupon.expiryDate.toLocaleDateString('en-US',
+            {
+            year:'numeric',
+            month: 'short'
+            ,
+            day: '2-digit'
+            }).replace(/\//g, '-'
+            ) %></p>
+          <p class="card-text">Limit of Use: ₹<%= coupon.limitOfUse %></p>
+          <p class="card-text">Discount Amount: ₹<%= coupon.discountAmount %></p>
+          <p class="card-text">Coupon Code: <span id="couponCode"><%= coupon.couponCode %></span></p>
+          <button class="btn btn-dark btn-sm copyButton" data-clipboard-text="<%= coupon.couponCode %>">Copy</button>        </div>
+      </div>
+    </div>
+    <%}else{%>
+                  
+      <%}%>
+        <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="5">No coupons available</td>
+            </tr>
+
+            <% } %>
+    <!-- Repeat the above card structure for the next two coupons -->
+
+  </div>
+</div>
+
+
+<%- include("../layouts/user/footer.ejs") -%>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<!-- JavaScript function to copy coupon code to clipboard -->
+<script>
+     document.addEventListener('DOMContentLoaded', function () {
+                    var clipboardButtons = document.querySelectorAll('.copyButton');
+            
+                    clipboardButtons.forEach( (button, i) => {
+                        var clipboard = new ClipboardJS(button);
+            
+                        clipboard.on('success', function (e) {
+                            button.innerText = 'Copied';
+                        });
+            
+                        clipboard.on('error', function (e) {
+                            console.error('Error copying to clipboard: ', e);
+                        });
+                    });
+                });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                crossorigin="anonymous"></script>

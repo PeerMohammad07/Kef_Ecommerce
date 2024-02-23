@@ -143,26 +143,46 @@
                             <h2 class="content-title">Add New Coupon</h2>
                         </div>
                     </div>
+               
                     <div class="col-12 col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="" method="post">
+                                <form action="" method="post" onsubmit="return validate()">
+                                    <% if (messages.exists) { %>
+                                        <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                            class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 " viewBox="0 0 16 16" role="img"
+                                            aria-label="Warning:">
+                                            <path
+                                              d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                          </svg>
+                                          <div>
+                                            <strong>Hey !</strong>
+                                            <%= messages.exists %>
+                                          </div>
+                                        </div>
+                          
+                          
+                                        <% } %>
                                     <label for="form-label">Name</label>
-                                    <input type="text" name="name" placeholder="Enter coupon name" class="form-control">
+                                    <input type="text" id="name" name="name" required placeholder="Enter coupon name" class="form-control">
+                                    <div id="hideName" class="forml" style="color: red;"></div>
 
                                     <label for="form-label">Activation date</label>
-                                    <input type="date" name="adate" placeholder="dd-mm-yyyy" class="form-control">
+                                    <input type="date" id="adate" name="adate" required placeholder="dd-mm-yyyy" class="form-control">
 
                                     <label for="form-label">Expire date</label>
-                                    <input type="date" name="edate" placeholder="dd-mm-yyyy" class="form-control">
+                                    <input type="date" id="edate" name="edate" required placeholder="dd-mm-yyyy" class="form-control">
 
                                     <label for="form-label">Limit of use</label>
-                                    <input type="text" name="limit" placeholder="enter how many user can use"
+                                    <input type="text" id="limit" name="limit" required placeholder="enter minimum amount to use"
                                         class="form-control">
+                                        <div id="hideLimit" class="forml" style="color: red;"></div>
 
-                                    <label for="form-label">Dicount amount</label>
-                                    <input type="text" name="damount" placeholder="enter how many user can use"
+                                    <label for="form-label">Discount amount</label>
+                                    <input type="text" id="damount" name="damount" required placeholder="enter discountAmount"
                                         class="form-control">
+                                        <div id="hidedamount" class="forml" style="color: red;"></div>
 
                                     <div class="modal-footer">
                                         <a href="/admin/coupons"> <button type="button" class="btn btn-secondary"
@@ -197,3 +217,38 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+        <script>
+            function validate(){
+                let damount = document.getElementById('damount')
+                let name = document.getElementById('name')
+                let edate = document.getElementById('edate')
+                let adate =  document.getElementById('adate')
+                let limit = document.getElementById('limit')
+                let errorName = document.getElementById('hideName')
+                let errorLimit = document.getElementById('hideLimit')
+                let errordamount = document.getElementById('hidedamount')
+                const nameRegex = /^[a-zA-Z\s]+$/;
+
+                if(name.value.trim()==''){
+                    errorName.textContent = 'fill the field'
+                    setTimeout(()=>{
+                    errorName.textContent = ''
+                    },3000)
+                    return false
+                }else if(limit.value.trim()==''){
+                    errorLimit.textContent = 'fill the field'
+                    setTimeout(()=>{
+                        errorDate.textContent = ''
+                    },3000)
+                    return false
+                }else if(damount.value.trim()==''){
+                    errordamount.textContent = 'fill the field'
+                    setTimeout(()=>{
+                        errorDate.textContent = ''
+                    },3000)
+                    return false
+                }else{
+                    return true
+                }
+            }
+        </script>

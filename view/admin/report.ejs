@@ -18,12 +18,14 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <% let index=0; %>
                     <% if(Array.isArray(orders)) {%>
                          <%orders.forEach((order) => {%>
                             <% order.products.forEach((product,i)=>{%>
                                 <% if(product.status == 'delivered'){ %>
+                                    <% index++ %>
                             <tr>
-                                <td><%= i + 1%></td>
+                                <td><%= index %></td>
                                 <td><%= order._id %></td>
                                 <td><img src="/assets/product/sharpedproduct/<%= product.productId.images[0] %>" alt="" style="height: 50px; width: 50px;"></td>
                                 <td><%= order.userId.name %></td>

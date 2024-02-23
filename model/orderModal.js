@@ -28,11 +28,14 @@ const orderSchema = mongoose.Schema({
       },
       status :{
         type:String,
-        enum: ['placed', 'outForDelivery', 'shipped', 'delivered','cancelled'],
+        enum: ['placed', 'outForDelivery','returnRequested','returned' ,'returnDenied','shipped', 'delivered','cancelled'],
         default:'placed'
       },
       quantity :{
         type:Number,
+      },
+      returnReason:{
+        type:String
       }
     }
   ],
@@ -64,6 +67,9 @@ const orderSchema = mongoose.Schema({
   },
   paymentId:{
     type:String
+  },
+  couponApplied:{
+    type:Number,
   }
 })
 

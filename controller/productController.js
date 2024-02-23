@@ -207,10 +207,18 @@ const loadShop = async (req, res) => {
   let products;
   let category = await Category.find({ isListed: false })
   try {
+    let sort = req.query.sort
     let id = req.query.id
     if (req.query.id) {
       products = await Product.find({ category: id, is_Listed: false }).populate("category")
-    } else {
+    } else if(sort=='priceLowTohigh'){
+      products = await Product.find({ is_Listed: false }).populate("category").sort({price:1})
+    }else if(sort == 'pricehighToLow'){
+      products = await Product.find({ is_Listed: false }).populate("category").sort({price:-1})
+    }else if(sort == 'name'){
+      products = await Product.find({ is_Listed: false }).populate("category").sort({name:1})
+    }
+    else {
       products = await Product.find({ is_Listed: false }).populate("category")
     }
     res.render('shop', { products, category })

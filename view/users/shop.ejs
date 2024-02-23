@@ -62,46 +62,31 @@
 
   <div class="container-fluid" data-aos="fade-in">
     <!-- Category Toolbar-->
-    <div class="">
-      <div>
-        <!-- <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="/shop">All</a></li>
-          </ol>
-        </nav> -->
-
-        <h1 class="fw-bold fs-3 mb-2 pt-3" style="color: #3b5d50;">All Products (<%= products.length %>)</h1>
+    <div class="row">
+      <div class="col-6">
 
       </div>
-      <div class="d-flex justify-content-end align-items-center mt-4 mt-lg-0 flex-column flex-md-row">
-
-        <!-- Filter Trigger-->
-        <!-- <button class="btn bg-light p-3 me-md-3 d-flex align-items-center fs-7 lh-1 w-100 mb-2 mb-md-0 w-md-auto " type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFilters" aria-controls="offcanvasFilters">
-                  <i class="ri-equalizer-line me-2"></i> Filters
-              </button> -->
-        <!-- / Filter Trigger-->
-
-        <!-- Sort Options-->
-        <!-- <select id="sortSelect" class="form-select form-select-sm border-0 bg-light p-3 pe-5 lh-1 fs-7" onchange="updateSort(this)">
+      <div class="d-flex justify-content-end col-6">
+        <select id="sortSelect" class="form-select form-select-sm border-0 bg-light p-3 pe-5 lh-1 fs-7" onchange="window.location.href=this.value">
                   <option value="/shop?sort=default" selected>Sort By</option>
                   <option value="/shop?sort=priceLowTohigh">Low Hi</option>
-                  <option value="/shop?sort=2">Hi Low</option>
-                  <option value="/shop?sort=3">Name</option>
-              </select> -->
-
-        <!-- / Sort Options-->
+                  <option value="/shop?sort=pricehighToLow">Hi Low</option>
+                  <option value="/shop?sort=name">Name(A-Z)</option>
+              </select>
       </div>
+    </div>  
+    <div>
+      <h1 class="fw-bold fs-3 mb-2 pt-3" style="color: #3b5d50;">All Products (<%= products.length %>)</h1>
+    </div>
+    
 
-    </div> <!-- /Category Toolbar-->
+
     <div class="row pt-3 ">
       <!-- Sidebar -->
       <div class="col-lg-3 col-3">
         <!-- Add your sidebar content here -->
         <div class="card " style="background-color: #3b5d50;" >
           <div class="card-body">
-
-
             <div class="accordion" id="accordionProduct">
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingTwo">

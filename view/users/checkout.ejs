@@ -227,15 +227,14 @@
 
               <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
               <div class="input-group w-75 couponcode-wrap">
-                <input type="text" class="form-control me-2" id="c_code" placeholder="Coupon Code"
-                  aria-label="Coupon Code" aria-describedby="button-addon2">
+                <input type="text" class="form-control me-2" id="c_code" placeholder="Coupon Code">
                 <div class="input-group-append">
-                  <button class=" btn-pill btn-custom" type="button" id="button-addon2">Apply</button>
+                  <button class=" btn-pill btn-custom" type="button" onclick="return applyCoupon()" id="button-addon2">Apply</button>
                 </div>
               </div>
-
             </div>
           </div>
+          <!-- coupon -->
         </div>
         <div class="col-md-6">
           <div class="row ">
@@ -248,7 +247,7 @@
                     <th>Total</th>
                   </thead>
                   <tbody>
-                    <% let subTotal=0; %>
+                    <% var subTotal=0; %>
                       <% if(cart&&cart.length>0){%>
 
                         <% cart.forEach((product)=>{%>
@@ -264,15 +263,14 @@
                             <%}) %>
                               <%}%>
                                 <tr>
-                                  <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+                                  <td class="text-black font-weight-bold"><strong>Subtotal</strong></td>
                                   <td class="text-black">₹<%= subTotal%>
                                   </td>
                                 </tr>
                                 <tr>
-                                  <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
-                                  <td class="text-black font-weight-bold"><strong>₹<%= subTotal %></strong></td>
+                                  <td class="text-black font-weight-bold"><strong>Total</strong></td>
+                                  <td class="text-black font-weight-bold"><strong id="total">₹<%= subTotal %></strong></td>
                                 </tr>
-
                   </tbody>
                 </table>
                 <div class="form-group">
@@ -301,7 +299,7 @@
 
 
                 <div class="form-group pt-3">
-                  <button class="py-3 btn-custom" onclick="placeOrder('<%= subTotal%>')">Place
+                  <button class="py-3 btn-custom" id="placeOrder" data-subTotal="<%= subTotal%>"  onclick="placeOrder('<%= subTotal%>')">Place
                     Order</button>
                 </div>
 
@@ -510,7 +508,7 @@
 
 
   <script>
-    function placeOrder(total) {
+    function placeOrder() {
       try {
         const radioBtnAddress = document.querySelector('input[name="addressRadio"]:checked')
         const index = radioBtnAddress ? radioBtnAddress.value : null
@@ -518,12 +516,16 @@
           const radioBtnPayment = document.querySelector('input[name="paymentMethod"]:checked')
           const payment = radioBtnPayment ? radioBtnPayment.value : null
           if (payment) {
+            const total= document.getElementById('placeOrder').getAttribute('data-subTotal')
+            const coupon = document.getElementById('placeOrder').getAttribute('data-couponApplied')
+            const value = coupon ?document.getElementById('placeOrder').getAttribute('data-couponCode'):false
             const subTotal = total
             if (subTotal) {
               const data = {
                 index: index,
                 payment: payment,
-                subTotal: subTotal
+                subTotal: subTotal,
+                couponCode:value
               }
               console.log(data);
               $.ajax({
@@ -634,5 +636,47 @@
 
   </script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    function applyCoupon(subTotal){
+      let couponCode = document.getElementById('c_code').value
+      if(couponCode){
+        document.getElementById('placeOrder').setAttribute('data-couponCode',`${couponCode}`)
+        let data = {couponCode:couponCode,totalPrice:subTotal}
+        $.ajax({
+          method:'POST',
+          url:'/checkCoupon',
+          data:JSON.stringify(data),
+          contentType:'application/json',
+          success:function(response){
+            if(response.notAvailable==true){
+             fireSwal(response.message)
+            }else if(response.min==true){
+              fireSwal(response.message)
+            }else if(response.expired==true){
+              fireSwal(response.message)
+            }else if(response.alreadyUsed==true){
+              fireSwal(response.message)
+            }else if(response.success==true){
+              document.getElementById('placeOrder').setAttribute('data-subTotal',`${response.subTotal}`)
+              document.getElementById('total').innerText = '₹'+response.subTotal
+              document.getElementById('placeOrder').setAttribute('data-couponApplied',1)
+            }
+          }
+        })
+      }
+    }
+  </script>
+<script>
+  function fireSwal(text) {
 
+        Swal.fire({
+            positon: "center",
+            icon: "error",
+            title: `${text}`,
+            showConfirmButton: false,
+            timer: 1500,
+        });
+
+    }
+</script>
   <%- include("../layouts/user/footer.ejs") -%>

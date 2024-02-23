@@ -7,6 +7,7 @@ const auth = require('../middlewares/userAuth')
 const productController = require('../controller/productController')
 const cartController = require('../controller/cartController')
 const orderController = require('../controller/orderController')
+const couponController = require('../controller/couponController')
 //session
 const session = require("express-session")
 user_route.use(session({ secret: config.sessionsecret, resave: false, saveUninitialized: false }))
@@ -79,9 +80,10 @@ user_route.get('/orderDetails', auth.isLogout, orderController.orderDetails)
 user_route.get('/myOrders', auth.isLogout, orderController.loadMyOrder)
 user_route.post('/cancelOrder', auth.isLogout, orderController.cancelOrder)
 
+user_route.get('/myCoupons',couponController.loadMyCoupon)
+user_route.post('/checkCoupon',couponController.checkCoupon)
 
-
-
+user_route.post('/returnRequest',orderController.returnRequest)
 
 module.exports = user_route;
 

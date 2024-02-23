@@ -185,21 +185,24 @@
           </div>
           <!-- card-body end// -->
       </div>
-      <!-- card end// -->
-      <!-- <div class="pagination-area mt-15 mb-50">
-          <nav aria-label="Page navigation example">
-              <ul class="pagination justify-content-start">
-                  <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                  <li class="page-item"><a class="page-link" href="#">02</a></li>
-                  <li class="page-item"><a class="page-link" href="#">03</a></li>
-                  <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                  <li class="page-item"><a class="page-link" href="#">16</a></li>
-                  <li class="page-item">
-                      <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
-                  </li>
-              </ul>
-          </nav>
-      </div> -->
+      <div class="pagination-area mt-15 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="/admin/orders?id=<%= previous %>"><</a>
+                </li>
+                <% for(let i = 1; i<= totalPages ;i++){ %>
+                    <li class="page-item">
+                        <a class="page-link" href="/admin/orders?id=<%= i %>"><%=i %>
+                        </a>
+                    </li>
+                    <%}%>
+                        <li class="page-item">
+                            <a class="page-link" href="/admin/orders?id=<%= next %>">></a>
+                        </li>
+            </ul>
+        </nav>
+    </div>
   </section>
   <!-- content-main end// -->
   <footer class="main-footer font-xs">
@@ -218,3 +221,5 @@
 </main>
 
 <%- include("../layouts/admin/footer.ejs") -%>
+
+</script>

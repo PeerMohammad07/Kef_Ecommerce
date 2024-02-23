@@ -11,9 +11,24 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({storage : storage})
 
-module.exports = upload
+const bannerStorage = multer.diskStorage({
+  destination: (req,file,cb)=>{
+    cb(null,path.join(__dirname,'../public/assets/images/banner'))
+  },
+  filename:(req,file,cb)=>{
+    const filename = file.originalname
+    cb(null,filename)
+  }
+})
+
+const upload = multer({storage : storage})
+const uploadBanner = multer({storage:bannerStorage})
+
+module.exports = {
+  upload,
+  uploadBanner
+}
  
 
 
