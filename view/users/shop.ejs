@@ -64,28 +64,34 @@
     <!-- Category Toolbar-->
     <div class="row">
       <div class="col-6">
+        <!-- Add an icon inside the search input box -->
+        <div class="input-group">
+          <span class="input-group-text"><i class="fas fa-search"></i></span>
+          <input type="text" id="searchInput" placeholder="Search Product" class="form-control bg-white" />
+        </div>
 
       </div>
       <div class="d-flex justify-content-end col-6">
-        <select id="sortSelect" class="form-select form-select-sm border-0 bg-light p-3 pe-5 lh-1 fs-7" onchange="window.location.href=this.value">
-                  <option value="/shop?sort=default" selected>Sort By</option>
-                  <option value="/shop?sort=priceLowTohigh">Low Hi</option>
-                  <option value="/shop?sort=pricehighToLow">Hi Low</option>
-                  <option value="/shop?sort=name">Name(A-Z)</option>
-              </select>
+        <select id="sortSelect" class="form-select form-select-sm border-0 bg-light p-3 pe-5 lh-1 fs-7"
+          onchange="window.location.href=this.value">
+          <option value="/shop?sort=default" selected>Sort By</option>
+          <option value="/shop?sort=priceLowTohigh">Low Hi</option>
+          <option value="/shop?sort=pricehighToLow">Hi Low</option>
+          <option value="/shop?sort=name">Name(A-Z)</option>
+        </select>
       </div>
-    </div>  
+    </div>
     <div>
       <h1 class="fw-bold fs-3 mb-2 pt-3" style="color: #3b5d50;">All Products (<%= products.length %>)</h1>
     </div>
-    
+
 
 
     <div class="row pt-3 ">
       <!-- Sidebar -->
       <div class="col-lg-3 col-3">
         <!-- Add your sidebar content here -->
-        <div class="card " style="background-color: #3b5d50;" >
+        <div class="card " style="background-color: #3b5d50;">
           <div class="card-body">
             <div class="accordion" id="accordionProduct">
               <div class="accordion-item">
@@ -101,14 +107,16 @@
                     <ul class="list-group list-group-flush">
                       <li class="list-group-item d-flex border-0 row g-0 px-0">
                         <% if(locals.category)%>
-                        <select id="selectCategory" class="form-select fw-bolder"
-                          onchange="window.location.href=this.value">
-                          <option value="" disabled selected>Select Category</option>
-                          <option value="/shop">All</option>
-                          <% category.map((x)=>{%>
-                            <option value="/shop?id=<%= x._id%>"><%= x.name%></option>
-                            <%}) %>
-                        </select>
+                          <select id="selectCategory" class="form-select fw-bolder"
+                            onchange="window.location.href=this.value">
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="/shop">All</option>
+                            <% category.map((x)=>{%>
+                              <option value="/shop?id=<%= x._id%>">
+                                <%= x.name%>
+                              </option>
+                              <%}) %>
+                          </select>
                       </li>
                     </ul>
                   </div>
@@ -152,15 +160,61 @@
                         <%= products.category.name %>
                       </small>
 
+                      <% let price=0; %>
+                        <% if(products.offer&&!products.category.offer) {%>
+                          <!-- if product have offer show this -->
+                          <% price=Math.floor( products.price - (products.price * products.offer.offerPercentage /100))
+                            %>
+                            <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s> <span
+                                class="text">₹<%= price %></span></p>
+                            <% }else if(products.category.offer&&!products.offer){ %>
+                              <!-- product.category have offer -->
+                              <% let off=0 %>
+                                <% offers.map((offer)=> { %>
+                                  <% if (String(offer._id )==String(products.category.offer) ) { %>
+                                    <% off=offer %>
+                                      <% } %>
+                                        <% }) %>
 
-                      <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.previous_price %></s> <span
-                          class="text">₹<%= products.price %></span></p>
+                                          <% price=Math.floor( products.price - (products.price * off.offerPercentage /100)) %>
+
+                                            <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s>
+                                              <span class="text">₹<%= price %></span></p>
+
+                                            <% } else if(products.category.offer&&products.offer){ %>
+                                              <!-- product and categeory have offers -->
+
+                                              <% let off=0 %>
+                                              <% offers.map((offer)=> { %>
+                                                <% if (String(offer._id )==String(products.category.offer) ) { %>
+                                                  <% off=offer %>
+                                                    <% } %>
+                                                      <% }) %>
+
+                                             <% if(products.offer.offerPercentage>= off.offerPercentage) {%>
+                                              <!-- product offer is greater than category offer -->
+                                              <% price=Math.floor( products.price - (products.price * products.offer.offerPercentage /100))
+                                              %>
+                                              <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s>
+                                                <span class="text">₹<%= price %></span></p>
+                                              <%}else if(off.offerPercentage>products.offer.offerPercentage){%>
+                                                <!-- cateory offer is greater than product -->
+                                                <% price=Math.floor( products.price - (products.price * off.offerPercentage /100)) %>
+
+                                                <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s>
+                                                  <span class="text">₹<%= price %></span></p>
+                                                <%}%>
+                                              
+                                                    <%} else{%>
+                                                      <!-- there is no offer show this -->
+                                                      <span class="text">₹<%= products.price %></span></p>
+                                                      <%}%>
                     </div>
                   </div>
                   <!--/ Card Product-->
                 </div>
                 <%}else{%>
-                  
+
                   <%}%>
                     <% }); %>
                       <% } else { %>
@@ -289,5 +343,49 @@
         <script src="js/tiny-slider.js"></script>
         <script src="js/custom.js"></script>
         </body>
+
+
+
+
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            // Get the search input element
+            const searchInput = document.getElementById('searchInput');
+
+            // Get the container for all product elements
+            const productContainer = document.querySelector('.row#searchResults');
+
+            // Clone all product elements to store the original state
+            const allProducts = Array.from(productContainer.children);
+
+            // Add a debounce function to introduce a delay
+            const debounce = function (func, delay) {
+              let timeoutId;
+              return function () {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(func, delay);
+              };
+            };
+
+            // Add an event listener for the input event on the search input with a debounce
+            searchInput.addEventListener('input', debounce(function () {
+              const searchTerm = searchInput.value.toLowerCase();
+
+              // Filter products based on the search term
+              const matchingProducts = allProducts.filter(function (productElement) {
+                const productName = productElement.querySelector('.cardtitleshop').innerText.toLowerCase();
+                return productName.includes(searchTerm);
+              });
+
+              // Clear the current product container
+              productContainer.innerHTML = '';
+
+              // Append matching products to the container
+              matchingProducts.forEach(function (matchingProduct) {
+                productContainer.appendChild(matchingProduct.cloneNode(true));
+              });
+            }, 300)); // Adjust the delay (in milliseconds) as needed
+          });
+        </script>
 
         <%- include("../layouts/user/footer.ejs") -%>

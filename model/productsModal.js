@@ -25,7 +25,8 @@ const productSchema  = mongoose.Schema({
     required:true
   },
   offer :{
-    type : String,
+    type : ObjectId,
+    ref:'Offer',
     required: false,
   },
   images: {

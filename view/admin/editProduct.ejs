@@ -60,6 +60,11 @@
           </a>
 
         </li>
+        <li class="menu-item ">
+          <a class="menu-link" href="/admin/offers"> <i class="icon material-icons md-monetization_on"></i>
+              <span class="text">Offers</span>
+          </a>
+      </li>
       </ul>
       <hr />
       <br />
@@ -187,23 +192,24 @@
                   <div class="form-group">
                     <label for="">Product Images</label>
                     <div class="row">
-                      <% for(let i=0; i< 4;i++){ %>
+                      <% for(let i=0; i< 4; i++) { %>
                         <div class="col-lg-6 col-md-6 mb-3 rounded-image-preview">
-                          <label for="imageInput<%= i %>" class="image-label">Image <%= i %>
-                              <div class="rounded-image-preview">
-                                <img id="imagePreview<%= i %>" alt="Preview" src="/assets/product/sharpedproduct/<%= product.images[i] %>" style="height: 150px; width: 150px;">
-                              </div>
-                              <input name="images" type="file" accept="image/*" id="imageInput<%= i %>"
-                                class="imageInput" onchange="previewImage(this, 'imagePreview<%= i %>')">
+                          <label for="imageInput<%= i %>" class="image-label">Image <%= i+1 %>
+                            <div class="rounded-image-preview">
+                              <img id="imagePreview<%= i %>" alt="Preview" src="/assets/product/sharpedproduct/<%= product.images[i] %>" style="height: 150px; width: 150px;">
+                              <button type="button" class="close-btn btn-danger" onclick="removeImage('<%= product.images[i] %>','<%= product._id %>')">remove</button>
+                            </div>
+                            <input name="images" type="file" accept="image/*" id="imageInput<%= i %>" class="imageInput" onchange="previewImage(this, 'imagePreview<%= i %>')">
                           </label>
                         </div>
-                        <%}%>
+                      <% } %>
                     </div>
                   </div>
+                  
 
                   <div class="form-group mt-3">
                     <button type="submit" class="btn btn-primary">Submit</button>
-                    <a href="product" class="btn btn-primary">
+                    <a href="/admin/products" class="btn btn-primary">
                       <span class="text">Back</span>
                     </a>
                   </div>
@@ -298,5 +304,24 @@
             }
         }
   </script>
+
+  <script>
+    function removeImage(image,productId){
+      const data = {image:image,productId:productId}
+      $.ajax({
+        method:'POST',
+        url:'/admin/removeImage',
+        data : JSON.stringify(data),
+        contentType:'application/json',
+        success:function(response){
+          if(response.removed){
+
+          }
+        }
+      })
+    }
+  </script>
+
+
 
   <%- include("../layouts/admin/footer.ejs") -%>

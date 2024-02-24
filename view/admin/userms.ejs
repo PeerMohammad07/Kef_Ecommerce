@@ -59,6 +59,11 @@
                     </a>
 
                 </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/offers"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offers</span>
+                    </a>
+                </li>
             </ul>
             <hr />
             <br />
@@ -143,7 +148,7 @@
             <div class="content-header">
                 <h2 class="content-title">Sellers list</h2>
                 <div>
-                    <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
+                    <input type="text" id="searchInput" placeholder="Search user name" class="form-control bg-white" />
                 </div>
             </div>
             <div class="card mb-4">
@@ -151,7 +156,7 @@
                 <!-- card-header end// -->
                 <div class="card-body " id="rel">
                     <div class="table-responsive" id="Reload">
-                        <table class="table table-hover">
+                        <table class="table table-hover" id="userTable">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -308,5 +313,24 @@
             })
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          let searchInput=document.getElementById('searchInput');
+      
+          searchInput.addEventListener('keyup', function () {
+            let searchTerm=searchInput.value.toLowerCase();
+            let tableRows=document.querySelectorAll('#userTable tbody tr');
+      
+            tableRows.forEach(function (row) {
+              let nameColumn=row.querySelector('td:nth-child(2) '); // Adjust the index based on your table structure
+      
+              if (nameColumn) {
+                let nameText=nameColumn.textContent.toLowerCase();
+                row.style.display=nameText.includes(searchTerm) ? '' : 'none';
+              }
+            });
+          });
+        });
+      </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <%- include("../layouts/admin/footer.ejs") -%>

@@ -46,17 +46,22 @@
                     </a>
 
                 </li>
-                <li class="menu-item active">
+                <li class="menu-item ">
                     <a class="menu-link" href="/admin/coupons"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Coupons</span>
                     </a>
 
                 </li>
-                <li class="menu-item ">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/banners"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Banners</span>
                     </a>
 
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/offers"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offers</span>
+                    </a>
                 </li>
             </ul>
             <hr />
@@ -181,7 +186,7 @@
                               </div>
 
                                 <div class="modal-footer">
-                                    <a href="/admin/coupons"> <button type="button" class="btn btn-secondary"
+                                    <a href="/admin/banners"> <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Back</button></a> 
                                     <button type="submit" class="btn btn-primary">Save changes</button>
                                 </div>
@@ -214,6 +219,44 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+        <script>
+              function validate(){
+                let div = document.getElementById('hide')
+                let title = document.getElementById('title')
+                let description = document.getElementById('description')
+                let targeturl = document.getElementById('Targeturl')
+              if(title.value.trim()===''){
+                div.textContent = 'filll all fields'
+                setTimeout(()=>{
+                    div.textContent=''
+                },2000)
+                return false
+              }else if(description.value.trim()===''){
+                div.textContent = 'filll all fields'
+                setTimeout(()=>{
+                    div.textContent=''
+                },2000)
+                return false
+              }else if(description.value.length <= 10){
+                div.textContent = 'description minimum 10 charachter'
+                setTimeout(()=>{
+                    div.textContent=''
+                },2000)
+                return false
+              }
+              else if(targeturl.value.trim()===''){
+                div.textContent = 'filll all fields'
+                setTimeout(()=>{
+                    div.textContent=''
+                },2000)
+                return false
+              }else{
+                return true
+              }
+            }
+        </script>
+        
+        </script>
         <script>
           function previewImage(input) {
   const preview = document.getElementById('imagePreview');

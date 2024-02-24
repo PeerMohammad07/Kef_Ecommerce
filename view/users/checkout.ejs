@@ -256,15 +256,15 @@
                               <%= product.productId.name %> <strong class="mx-2">x</strong>
                                 <%= product.quantity %>
                             </td>
-                            <td>₹<%= product.productId.price * product.quantity %>
+                            <td>₹<%= product.totalPrice %>
                             </td>
                           </tr>
-                          <%subTotal +=product.productId.price * product.quantity%>
+                          <%subTotal +=product.totalPrice%>
                             <%}) %>
                               <%}%>
                                 <tr>
                                   <td class="text-black font-weight-bold"><strong>Subtotal</strong></td>
-                                  <td class="text-black">₹<%= subTotal%>
+                                  <td class="text-black">₹<%= subTotal %>
                                   </td>
                                 </tr>
                                 <tr>

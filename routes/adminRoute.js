@@ -7,6 +7,7 @@ const categoryController = require('../controller/categoryController')
 const adminAuth = require('../middlewares/adminAuth')
 const couponController = require('../controller/couponController')
 const bannerController = require('../controller/bannerController')
+const offerController = require('../controller/offerController')
 
 admin_route.set('view engine', 'ejs')
 admin_route.set('views', './view/admin')
@@ -33,7 +34,7 @@ admin_route.post('/addProduct', multer.upload.array('images'), productController
 admin_route.get('/edit-product', adminAuth.isLogout, productController.editProductLoad)
 admin_route.post('/edit-product', multer.upload.array('images'), productController.editProduct)
 admin_route.post('/deleteProduct', productController.deleteProduct)
-
+admin_route.post('/removeImage',productController.removeImage)
 
 // Category 
 admin_route.get('/categories', adminAuth.isLogout, categoryController.loadCategory)
@@ -62,11 +63,23 @@ admin_route.post('/listCoupon',couponController.listCoupon)
 
 admin_route.post('/changeReturnStatus',adminController.changeReturnStatus)
 
-admin_route.get('/banners',bannerController.loadBanner)
-admin_route.get('/addBanner',bannerController.loadAddBanner)
+admin_route.get('/banners',adminAuth.isLogout,bannerController.loadBanner)
+admin_route.get('/addBanner',adminAuth.isLogout,bannerController.loadAddBanner)
 admin_route.post('/addBanner',multer.uploadBanner.single('image'),bannerController.addBanner)
-admin_route.get('/editBanner',bannerController.loadEditBanner)
+admin_route.get('/editBanner',adminAuth.isLogout,bannerController.loadEditBanner)
 admin_route.post('/editBanner',multer.uploadBanner.single('image'),bannerController.editBanner)
-admin_route.post('/listBanner',bannerController.listBanner)
+admin_route.post('/listBanner',adminAuth.isLogout,bannerController.listBanner)
+
+admin_route.get('/offers',adminAuth.isLogout,offerController.loadOffer)
+admin_route.get('/addOffer',adminAuth.isLogout,offerController.loadAddOffer)
+admin_route.post('/addOffer',adminAuth.isLogout,offerController.addOffer)
+admin_route.get('/editOffer',adminAuth.isLogout,offerController.loadEditOffer)
+admin_route.post('/editOffer',adminAuth.isLogout,offerController.editOffer)
+admin_route.post('/addProductOffer',adminAuth.isLogout,offerController.addProductOffer)
+admin_route.get('/applyOffer',adminAuth.isLogout,offerController.loadApplyOffer)
+admin_route.post('/removeProductOffer',adminAuth.isLogout,offerController.removeProductOffer)
+admin_route.get('/applyCategoryOffer',adminAuth.isLogout,offerController.loadApplyOfferCategory)
+admin_route.post('/addCategoryOffer',adminAuth.isLogout,offerController.addCategoryOffer)
+admin_route.post('/removeCategoryOffer',adminAuth.isLogout,offerController.removeCategoryOffer)
 
 module.exports = admin_route;

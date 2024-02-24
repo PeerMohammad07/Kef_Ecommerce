@@ -57,7 +57,12 @@
                     <span class="text">Banners</span>
                 </a>
             
-            </li>     
+            </li>   
+            <li class="menu-item ">
+                <a class="menu-link" href="/admin/offers"> <i class="icon material-icons md-monetization_on"></i>
+                    <span class="text">Offers</span>
+                </a>
+            </li>  
         </ul>
         <hr />
         <br />
@@ -126,7 +131,7 @@
               <p>Lorem ipsum dolor sit amet.</p>
           </div>
           <div>
-              <input type="text" placeholder="Search order ID" class="form-control bg-white" />
+              <input type="text" id="searchInput" placeholder="Search order ID" class="form-control bg-white" />
           </div>
       </div>
       <div class="card mb-4">
@@ -135,7 +140,7 @@
           <!-- card-header end// -->
           <div class="card-body">
               <div class="table-responsive">
-                  <table class="table table-hover">
+                  <table class="table table-hover" id="oderTable">
                       <thead>
                           <tr>
                               <th>Index</th>
@@ -220,6 +225,25 @@
   </footer>
 </main>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let searchInput=document.getElementById('searchInput');
+
+    searchInput.addEventListener('keyup', function () {
+      let searchTerm=searchInput.value.toLowerCase();
+      let tableRows=document.querySelectorAll('#userTable tbody tr');
+
+      tableRows.forEach(function (row) {
+        let nameColumn=row.querySelector('td:nth-child(2) '); // Adjust the index based on your table structure
+
+        if (nameColumn) {
+          let nameText=nameColumn.textContent.toLowerCase();
+          row.style.display=nameText.includes(searchTerm) ? '' : 'none';
+        }
+      });
+    });
+  });
+</script>
 <%- include("../layouts/admin/footer.ejs") -%>
 
 </script>

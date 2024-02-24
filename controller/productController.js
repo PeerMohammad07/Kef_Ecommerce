@@ -1,6 +1,8 @@
 const Category = require('../model/categoryModal')
 const Product = require('../model/productsModal')
 const Cart = require('../model/cartModal')
+const Offer = require('../model/offerModal')
+const fs = require('fs')
 const Sharp = require('sharp')
 
 const loadProduct = async (req, res) => {
@@ -151,6 +153,7 @@ const editProduct = async (req, res) => {
         }
       })
     const arrimages = [];
+    console.log(req.files);
     for (let i = 0; i < req.files.length; i++) {
       arrimages.push(req.files[i].filename);
     }
@@ -164,7 +167,7 @@ const editProduct = async (req, res) => {
       const image2 = arrimages[1] || existingData[0].images[1]
       const image3 = arrimages[2] || existingData[0].images[2]
       const image4 = arrimages[3] || existingData[0].images[3]
-      await Product.updateOne({
+      await Product.findOneAndUpdate({
         _id: id
       },
         {
@@ -210,18 +213,19 @@ const loadShop = async (req, res) => {
     let sort = req.query.sort
     let id = req.query.id
     if (req.query.id) {
-      products = await Product.find({ category: id, is_Listed: false }).populate("category")
+      products = await Product.find({ category: id, is_Listed: false }).populate("category").populate('offer')
     } else if(sort=='priceLowTohigh'){
-      products = await Product.find({ is_Listed: false }).populate("category").sort({price:1})
+      products = await Product.find({ is_Listed: false }).populate("category").sort({price:1}).populate('offer')
     }else if(sort == 'pricehighToLow'){
-      products = await Product.find({ is_Listed: false }).populate("category").sort({price:-1})
+      products = await Product.find({ is_Listed: false }).populate("category").sort({price:-1}).populate('offer')
     }else if(sort == 'name'){
-      products = await Product.find({ is_Listed: false }).populate("category").sort({name:1})
+      products = await Product.find({ is_Listed: false }).populate("category").sort({name:1}).populate('offer')
     }
     else {
-      products = await Product.find({ is_Listed: false }).populate("category")
+      products = await Product.find({ is_Listed: false }).populate("category").populate('offer')
     }
-    res.render('shop', { products, category })
+    const offers = await Offer.find({})
+    res.render('shop', { products, category ,offers})
   } catch (error) {
     console.log(error.message);
   }
@@ -230,9 +234,10 @@ const loadShop = async (req, res) => {
 //product  view
 const productView = async (req, res) => {
   try {
+    const offers = await Offer.find({})
     const productId = req.query.id;
     const userid = req.session.user;
-    const product = await Product.findById(productId).populate('category');
+    const product = await Product.findById(productId).populate('category').populate('offer');
     const viewProduct = await Product.findById({ _id: productId });
     const relatedProduct = await Product.find({
       category: viewProduct.category,
@@ -248,17 +253,30 @@ const productView = async (req, res) => {
         const existsProduct = existscart.products.find((pro) => pro.productId.toString() === productId);
 
         if (existsProduct) {
-          return res.render('productDetails', { product, relatedProduct, inCart: true });
+          return res.render('productDetails', { product, relatedProduct, inCart: true ,offers});
         }
       }
     }
 
 
-    res.render('productDetails', { product, relatedProduct, inCart: false });
+    res.render('productDetails', { product, relatedProduct, inCart: false ,offers});
 
   } catch (error) {
     console.log(error.message);
     res.render('errorPage', { errorMessage: 'An error occurred while loading the product details.' });
+  }
+}
+
+const removeImage = async (req,res)=>{
+  try {
+    const {image,productId} = req.body;
+    
+   const product = await Product.findOneAndUpdate({_id:productId},
+      {$pull:{images:image}}
+      )
+
+  } catch (error) {
+    console.log(error.message);
   }
 }
 
@@ -271,5 +289,6 @@ module.exports = {
   editProduct,
   deleteProduct,
   loadShop,
-  productView
+  productView,
+  removeImage
 }

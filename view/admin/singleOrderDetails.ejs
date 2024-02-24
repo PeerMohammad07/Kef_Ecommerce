@@ -105,13 +105,16 @@
                                                                 value="delivered">returned</option>
                                                         </select>
                                                         <%} else if(el.status==='returnDenied' ) {%>
-                                                            <select data-orderId="<%= order._id%>"
-                                                                data-productId="<%= el.productId._id%>" data-index="<%= i%>"
+                                                            <select data-orderId="<%= order._id %>"
+                                                                data-productId="<%= el.productId._id%>"
+                                                                data-index="<%= i%>"
                                                                 data-userId="<%= order.userId._id%>"
                                                                 class="form-select orderStatus" id="orderStatus"
-                                                                name="orderStatus" disabled>
-                                                                <option style="color: red;"
-                                                                    value="delivered">return denied</option>
+                                                                name="orderStatus" onchange="changeStatus(this)">
+                                                                <option>change status</option>
+                                                                <option value="shipped">Shipped</option>
+                                                                <option value="outfordelivery">OutForDelivery</option>
+                                                                <option value="delivered">Delivered</option>
                                                             </select>
                                                     <%} else if(el.status==='returnRequested' ) {%>
                                                         <select data-orderId="<%= order._id %>"

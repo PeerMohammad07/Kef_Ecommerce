@@ -59,6 +59,11 @@
                     </a>
 
                 </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/offers"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Offers</span>
+                    </a>
+                </li>
             </ul>
             <hr />
             <br />
@@ -193,6 +198,9 @@
                                                         <center>Description</center>
                                                     </th>
                                                     <th scope="col">
+                                                        <center>Coupon</center>
+                                                    </th>
+                                                    <th scope="col">
                                                         <center>Edit</center>
                                                     </th>
                                                     <th scope="col">
@@ -213,6 +221,11 @@
                                                             <td align="center">
                                                                 <%= value.description%>
                                                             </td>
+                                                            <td>
+                                                                <button class="btn-info" ><a href="/admin/applyCategoryOffer?id=<%= value._id %>" style="text-decoration: none;color: black;">Apply</a>
+                                                                    
+                                                                </button>
+                                                            </td>
                                                             <td align="center"><a
                                                                     href="/admin/editCategory?id=<%= value._id%>"><i
                                                                         class="fas fa-edit fa-lg mx-1"></i></a></a></td>
@@ -225,6 +238,8 @@
                                                                 </a>
                                                             </td>
                                                         </tr>
+                                                        
+
                                                         <% })) %>
                                                             <% } else{ %>
 
@@ -262,7 +277,11 @@
     <script src="/js/vendors/perfect-scrollbar.js"></script>
     <script src="/js/vendors/jquery.fullscreen.min.js"></script>
 
+<script>
+    function applyOffer(){
 
+    }
+</script>
 
 
     <script>

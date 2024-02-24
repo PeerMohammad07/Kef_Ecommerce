@@ -134,11 +134,69 @@
             <h1 class="mb-1 fs-2 fw-bold">
               <%= product.name %>
             </h1>
-            <div class="d-flex justify-content-between align-items-center">
-              <!-- <s class="text-danger">₹<%= product.previous_price %></s> -->
-              <p class="mt-2 mb-0 small"> <span
-                  class=" ps-1 fs-4 m-0">₹<%= product.price %></span></p>
-            </div>
+
+
+
+
+
+
+            <% let price=0; %>
+            <% if(product.offer&&!product.category.offer) {%>
+              <!-- if product have offer show this -->
+              <% price=Math.floor( product.price - (product.price * product.offer.offerPercentage /100))
+                %>
+                <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s> <span
+                    class="text">₹<%= price %></span></p>
+                <% }else if(product.category.offer&&!product.offer){ %>
+                  <!-- product.category have offer -->
+                  <% let off=0 %>
+                    <% offers.map((offer)=> { %>
+                      <% if (String(offer._id )==String(product.category.offer) ) { %>
+                        <% off=offer %>
+                          <% } %>
+                            <% }) %>
+
+                              <% price=Math.floor( product.price - (product.price * off.offerPercentage /100)) %>
+
+                                <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= product.price %></s>
+                                  <span class="text">₹<%= price %></span></p>
+
+                                <% } else if(product.category.offer&&product.offer){ %>
+                                  <!-- product and categeory have offers -->
+
+                                  <% let off=0 %>
+                                  <% offers.map((offer)=> { %>
+                                    <% if (String(offer._id )==String(product.category.offer) ) { %>
+                                      <% off=offer %>
+                                        <% } %>
+                                          <% }) %>
+
+                                 <% if(product.offer.offerPercentage>= off.offerPercentage) {%>
+                                  <!-- product offer is greater than category offer -->
+                                  <% price=Math.floor( product.price - (product.price * product.offer.offerPercentage /100))
+                                  %>
+                                  <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= product.price %></s>
+                                    <span class="text">₹<%= price %></span></p>
+                                  <%}else if(off.offerPercentage>product.offer.offerPercentage){%>
+                                    <!-- cateory offer is greater than product -->
+                                    <% price=Math.floor( product.price - (product.price * off.offerPercentage /100)) %>
+
+                                    <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= product.price %></s>
+                                      <span class="text">₹<%= price %></span></p>
+                                    <%}%>
+                                  
+                                        <%} else{%>
+                                          <!-- there is no offer show this -->
+                                          <span class="text">₹<%= product.price %></span></p>
+                                          <%}%>
+
+
+
+
+
+
+
+
             <%if(product.stock<=0){%>
             <input type="button" class="border-0" class="incdec" onclick="decrementValue()" value="-" />
             <input type="text" class="incdec" name="quantity" value="0" maxlength="2" max="<%= product.stock %>"

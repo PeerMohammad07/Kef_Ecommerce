@@ -69,8 +69,7 @@ const loadSignup = (req, res) => {
 // inserting User
 const insertUser = async (req, res) => {
   try {
-    const email = req.body.email
-    const namee = req.body.name
+    const {namee,email}=req.body
     const findUser = await User.findOne({ email: email })
     const findUserByName = await User.findOne({ name: namee })
     if (findUser) {

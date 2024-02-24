@@ -19,14 +19,20 @@ const loadAddBanner = async (req,res)=>{
 
 const addBanner = async (req,res)=>{
   try {
-    const banner = new Banner({
-      title:req.body.title,
-      description:req.body.description,
-      targetUrl:req.body.Targeturl,
-      image:req.file.filename
-    })
-    await banner.save()
-    res.redirect('/admin/banners')
+    const already = await Banner.findOne({title:req.body.title})
+if(!already){
+  const banner = new Banner({
+    title:req.body.title,
+    description:req.body.description,
+    targetUrl:req.body.Targeturl,
+    image:req.file.filename
+  })
+  await banner.save()
+  res.redirect('/admin/banners')
+}else{
+  req.flash('exists','title is already exists')
+  res.redirect('/admin/addBanner')
+}
   } catch (error) {
     console.log(error.message);
   }
@@ -44,19 +50,25 @@ const loadEditBanner = async (req,res)=>{
 
 const editBanner = async (req,res)=>{
   try {
-    console.log(req.body);
+    const already = await Banner.findOne({title:req.body.title,_id:{$ne:req.body.id}})
     const bannerId = req.body.id;
     const banner = await Banner.findOne({_id:bannerId})
     const image = req.file ? req.file.filename : banner.image
+
+    if(!already){
     await Banner.findByIdAndUpdate({_id:bannerId},{
       $set:{
         title:req.body.title,
         description:req.body.description,
-        targetUrl:req.body.targetUrl,
+        targetUrl:req.body.Targeturl,
         image:image
       }
     })
     res.redirect('/admin/banners')
+  }else{
+    req.flash('exists','title already exists')
+    res.redirect(`/admin/editBanner?id=${bannerId}`)
+  }
   } catch (error) {
     console.log(error.message);
   }

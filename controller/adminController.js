@@ -133,7 +133,7 @@ const loadDashboard = async (req, res) => {
           placed++
         } else if (product.status == 'cancelled') {
           cancelled++
-        } else if (product.status == 'returns') {
+        } else if (product.status == 'returned') {
           returns++
         }
       })
@@ -287,7 +287,7 @@ const loadDashboard = async (req, res) => {
     ]);
 
     const wallet = Wallet[0].count || 0
-    
+
 
     res.render('adminDashboard',
       {
@@ -335,26 +335,26 @@ const blockUser = async (req, res) => {
 const loadOrder = async (req, res) => {
   try {
     let page = 1
-    if(req.query.id){
+    if (req.query.id) {
       page = req.query.id
     }
 
     let next = page + 1
-    let previous = page>1? page-1 : 1
+    let previous = page > 1 ? page - 1 : 1
     let limit = 8;
 
-    let count  = await Order.find().count()
+    let count = await Order.find().count()
 
-    let totalPages = Math.ceil(count/limit)
+    let totalPages = Math.ceil(count / limit)
 
     const order = await Order.find({})
       .populate('userId')
       .populate('products.productId')
       .sort({ date: -1 })
       .limit(limit)
-      .skip((page-1)*limit)
+      .skip((page - 1) * limit)
       .exec()
-    res.render('adminOrders', { order: order ,next,previous,totalPages})
+    res.render('adminOrders', { order: order, next, previous, totalPages })
   } catch (error) {
     console.log(error.message);
   }
@@ -415,33 +415,47 @@ const loadCreateReport = async (req, res) => {
   }
 }
 
-const changeReturnStatus = async(req,res)=>{
+const changeReturnStatus = async (req, res) => {
   try {
-    const {orderId, productId, status, userId} =req.body
-    if(status == 'returned'){
-      const user = await User.findOne({_id:userId})
-      if(user){
-        const order = await Order.findOne({_id:orderId})
+    console.log("hehe");
+    const { orderId, productId, status, userId } = req.body
+    if (status == 'returned') {
+      const user = await User.findOne({ _id: userId })
+      if (user) {
+        const order = await Order.findOne({ _id: orderId })
         const productDetails = await Order.findOne(
           { _id: orderId, 'products.productId': productId },
           { 'products.$': 1 }
         ).populate('products.productId')
-      
-        const amount = productDetails.products[0].productId.price * productDetails.products[0].quantity - order.couponApplied ;
-        await User.findByIdAndUpdate({_id:userId},{$inc:{wallet:amount}})
-        await Order.findOneAndUpdate(
-          {_id:orderId,'products.productId':productId},
-          {'products.$.status':status}
-        )
-        await Product.findOneAndUpdate({_id:productId},{$inc:{stock:1}})
-        res.json({changed:true})
+
+        if (order.couponApplied) {
+          const amount = productDetails.products[0].productId.price * productDetails.products[0].quantity - order.couponApplied;
+          await User.findByIdAndUpdate({ _id: userId }, { $inc: { wallet: amount } })
+          await Order.findOneAndUpdate(
+            { _id: orderId, 'products.productId': productId },
+            { 'products.$.status': status }
+          )
+          await Product.findOneAndUpdate({ _id: productId }, { $inc: { stock: 1 } })
+          res.json({ changed: true })
+        }else{
+          const amount = productDetails.products[0].productId.price * productDetails.products[0].quantity ;
+          await User.findByIdAndUpdate({ _id: userId }, { $inc: { wallet: amount } })
+          await Order.findOneAndUpdate(
+            { _id: orderId, 'products.productId': productId },
+            { 'products.$.status': status }
+          )
+          await Product.findOneAndUpdate({ _id: productId }, { $inc: { stock: 1 } })
+          res.json({ changed: true })
+        }
+
+
       }
-    }else{
+    } else {
       await Order.findOneAndUpdate(
-        {_id:orderId,'products.productId':productId},
-        {'products.$.status':status}
+        { _id: orderId, 'products.productId': productId },
+        { 'products.$.status': status }
       )
-      res.json({changed:true})
+      res.json({ changed: true })
     }
 
   } catch (error) {
