@@ -334,6 +334,7 @@ const blockUser = async (req, res) => {
 
 const loadOrder = async (req, res) => {
   try {
+    await Order.deleteMany({ status: 'pending', paymentMethod: 'razorpay' });
     let page = 1
     if (req.query.id) {
       page = req.query.id

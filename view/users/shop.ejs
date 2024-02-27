@@ -14,7 +14,6 @@
           </li>
           <li class="nav-item active"><a class="nav-link" href="/shop">Shop</a></li>
           <li><a class="nav-link" href="/about">About us</a></li>
-          <li><a class="nav-link" href="services.html">Services</a></li>
           <li><a class="nav-link" href="/blog">Blog</a></li>
           <li><a class="nav-link" href="/whishList">Whishlist</a></li>
         </ul>
@@ -40,6 +39,7 @@
     </div>
   </nav>
   <!-- end of nav -->
+
 
 
 
@@ -72,14 +72,38 @@
 
       </div>
       <div class="d-flex justify-content-end col-6">
-        <select id="sortSelect" class="form-select form-select-sm border-0 bg-light p-3 pe-5 lh-1 fs-7"
-          onchange="window.location.href=this.value">
-          <option value="/shop?sort=default" selected>Sort By</option>
-          <option value="/shop?sort=priceLowTohigh">Low Hi</option>
-          <option value="/shop?sort=pricehighToLow">Hi Low</option>
-          <option value="/shop?sort=name">Name(A-Z)</option>
+        <select id="sortSelect" onchange="updateSort()">
+          <option value="default" selected>Sort By</option>
+          <option value="priceLowTohigh">Low Hi</option>
+          <option value="pricehighToLow">Hi Low</option>
+          <option value="name">Name(A-Z)</option>
         </select>
       </div>
+
+
+      <script>
+        function updateSort() {
+          var selectedOption = document.getElementById("sortSelect").value;
+          var currentUrl = new URL(window.location.href);
+
+          // Get the existing sort parameter
+          var existingSort = currentUrl.searchParams.get('sort');
+
+          // Update the sort parameter or add a new one
+          if (existingSort) {
+            currentUrl.searchParams.set('sort', selectedOption);
+          } else {
+            currentUrl.searchParams.append('sort', selectedOption);
+          }
+
+          // Update the window location
+          window.location.href = currentUrl.toString();
+        }
+      </script>
+
+
+
+
     </div>
     <div>
       <h1 class="fw-bold fs-3 mb-2 pt-3" style="color: #3b5d50;">All Products (<%= products.length %>)</h1>
@@ -176,39 +200,49 @@
                                       <% } %>
                                         <% }) %>
 
-                                          <% price=Math.floor( products.price - (products.price * off.offerPercentage /100)) %>
+                                          <% price=Math.floor( products.price - (products.price * off.offerPercentage
+                                            /100)) %>
 
                                             <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s>
-                                              <span class="text">₹<%= price %></span></p>
+                                              <span class="text">₹<%= price %></span>
+                                            </p>
 
                                             <% } else if(products.category.offer&&products.offer){ %>
                                               <!-- product and categeory have offers -->
 
                                               <% let off=0 %>
-                                              <% offers.map((offer)=> { %>
-                                                <% if (String(offer._id )==String(products.category.offer) ) { %>
-                                                  <% off=offer %>
-                                                    <% } %>
-                                                      <% }) %>
+                                                <% offers.map((offer)=> { %>
+                                                  <% if (String(offer._id )==String(products.category.offer) ) { %>
+                                                    <% off=offer %>
+                                                      <% } %>
+                                                        <% }) %>
 
-                                             <% if(products.offer.offerPercentage>= off.offerPercentage) {%>
-                                              <!-- product offer is greater than category offer -->
-                                              <% price=Math.floor( products.price - (products.price * products.offer.offerPercentage /100))
-                                              %>
-                                              <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s>
-                                                <span class="text">₹<%= price %></span></p>
-                                              <%}else if(off.offerPercentage>products.offer.offerPercentage){%>
-                                                <!-- cateory offer is greater than product -->
-                                                <% price=Math.floor( products.price - (products.price * off.offerPercentage /100)) %>
+                                                          <% if(products.offer.offerPercentage>= off.offerPercentage)
+                                                            {%>
+                                                            <!-- product offer is greater than category offer -->
+                                                            <% price=Math.floor( products.price - (products.price *
+                                                              products.offer.offerPercentage /100)) %>
+                                                              <p class="mt-2 mb-0 small"><s class="text-danger">₹<%=
+                                                                    products.price %></s>
+                                                                <span class="text">₹<%= price %></span>
+                                                              </p>
+                                                              <%}else if(off.offerPercentage>
+                                                                products.offer.offerPercentage){%>
+                                                                <!-- cateory offer is greater than product -->
+                                                                <% price=Math.floor( products.price - (products.price *
+                                                                  off.offerPercentage /100)) %>
 
-                                                <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s>
-                                                  <span class="text">₹<%= price %></span></p>
-                                                <%}%>
-                                              
-                                                    <%} else{%>
-                                                      <!-- there is no offer show this -->
-                                                      <span class="text">₹<%= products.price %></span></p>
-                                                      <%}%>
+                                                                  <p class="mt-2 mb-0 small"><s class="text-danger">₹<%=
+                                                                        products.price %></s>
+                                                                    <span class="text">₹<%= price %></span>
+                                                                  </p>
+                                                                  <%}%>
+
+                                                                    <%} else{%>
+                                                                      <!-- there is no offer show this -->
+                                                                      <span class="text">₹<%= products.price %></span>
+                                                                      </p>
+                                                                      <%}%>
                     </div>
                   </div>
                   <!--/ Card Product-->
@@ -224,6 +258,61 @@
 
                         <% } %>
         </div>
+
+
+
+
+        <div class="pagination-area mt-15 mb-50">
+          <nav aria-label="Page navigation example">
+              <ul class="pagination">
+                  <li class="page-item">
+                      <a class="page-link" href="#" onclick="updatePage('<%= previous %>')"><</a>
+                  </li>
+                  <% for(let i = 1; i <= totalPages; i++){ %>
+                      <li class="page-item">
+                          <a class="page-link" href="#" onclick="updatePage('<%= i %>')"><%= i %></a>
+                      </li>
+                  <% } %>
+                  <li class="page-item">
+                      <a class="page-link" href="#" onclick="updatePage('<%= next %>')">></a>
+                  </li>
+              </ul>
+          </nav>
+      </div>
+      
+
+      
+<script>
+  function updatePage(action) {
+      var currentUrl = new URL(window.location.href);
+
+      // Get the existing page parameter
+      var existingPage = currentUrl.searchParams.get('page');
+
+      // Calculate the new page number based on the action
+      var newPage;
+      if (action === '<%= previous %>') {
+          newPage = existingPage ? parseInt(existingPage) - 1 : 1;
+      } else if (action === '<%= next %>') {
+          newPage = existingPage ? parseInt(existingPage) + 1 : 2; // Change to the default starting page
+      } else {
+          newPage = parseInt(action);
+      }
+
+      // Set or append the 'page' parameter in the URL
+      if (existingPage) {
+          currentUrl.searchParams.set('page', newPage);
+      } else {
+          currentUrl.searchParams.append('page', newPage);
+      }
+
+      // Remove the fragment identifier (hash)
+      currentUrl.hash = '';
+
+      // Update the window location
+      window.location.href = currentUrl.toString();
+  }
+</script>
 
 
         <!-- Start Footer Section -->

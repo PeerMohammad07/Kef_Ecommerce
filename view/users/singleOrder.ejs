@@ -1,0 +1,39 @@
+<%- include("../layouts/user/header.ejs") -%>
+
+<%  if(locals.order){ %>
+<div class="container mt-5">
+  <div class="card">
+      <div class="card-body">
+          <div class="row">
+              <div class="col-md-3">
+                  <!-- Product Image -->
+                  <img src="/assets/product/sharpedproduct/<%= product.products[0].productId.images[0] %>" alt="Product Image" class="img-fluid">
+
+              </div>
+              <div class="col-md-9">
+                  <!-- Product Details -->
+                  <h4 class="card-title"><%= product.products[0].productId.name %></h4>
+                  <!-- <p class="card-text">Price: <%=  product.products[0].productId.price %> %></p> -->
+                  <p class="card-text"><strong>Order Id:</strong> <%= order._id %> </p>
+                  <p class="card-text"><strong>Quantity:</strong> <%=  product.products[0].quantity %> %> </p>
+                  <p class="card-text"><strong>Price:</strong> <%=  product.products[0].productId.price %> %> </p>
+                  <!-- <p class="card-text">Total: <%= product.products[0].quantity*product.products[0].productId.price %></p> -->
+                  <p class="card-text"><strong>Status:</strong> <%= product.products[0].status %></p>
+                  <p class="card-text"><strong>Payment Method:</strong> <%= product.paymentMethod %></p>
+                  <p class="card-text"><strong>Placed On:</strong> <%= product.date.toLocaleDateString('en-US', { year: 'numeric',
+                    month: 'short', day: '2-digit' }).replace(/\//g, '-') %></p>
+                    <div><strong>Address:</strong> <%= order.deliveryAddress.name  %>,<%=  order.deliveryAddress.state %>,<%= order.deliveryAddress.city %>,<%= order.deliveryAddress.phNo %></div>
+
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="text-center  pt-5">
+  <Button class="btn-dark"><a href="/myOrders" style="text-decoration: none; color: none;">Back</a></Button>
+</div>
+<%}%>
+
+
+
+<%- include('../layouts/user/footer.ejs') -%>

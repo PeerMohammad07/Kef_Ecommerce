@@ -62,7 +62,9 @@
             </a>
      
                 <form action="" method="post"  onsubmit="return validate()">
-                                      
+                              
+                    <input type="hidden" value="<%= refer %>" name="refer" id="">
+
                     <div class="form-group col-12 pt-3">
                         <input type="text" class="form-control" name="name" placeholder="Enter your name" id="uname" autofocus required >
                         <div id="userError" class="forml" style="color: red;"></div>

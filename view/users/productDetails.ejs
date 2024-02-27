@@ -145,7 +145,7 @@
               <!-- if product have offer show this -->
               <% price=Math.floor( product.price - (product.price * product.offer.offerPercentage /100))
                 %>
-                <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= products.price %></s> <span
+                <p class="mt-2 mb-0 small"><s class="text-danger">₹<%= product.price %></s> <span
                     class="text">₹<%= price %></span></p>
                 <% }else if(product.category.offer&&!product.offer){ %>
                   <!-- product.category have offer -->

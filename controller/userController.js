@@ -58,7 +58,8 @@ const securePassword = async (password) => {
 // signup loading 
 const loadSignup = (req, res) => {
   try {
-    res.render('signup')
+    const refer = req.query.refer;
+    res.render('signup',{refer})
   } catch (error) {
     console.log(error.message);
   }
@@ -69,7 +70,7 @@ const loadSignup = (req, res) => {
 // inserting User
 const insertUser = async (req, res) => {
   try {
-    const {namee,email}=req.body
+    const {namee,email,refer}=req.body
     const findUser = await User.findOne({ email: email })
     const findUserByName = await User.findOne({ name: namee })
     if (findUser) {
@@ -87,11 +88,12 @@ const insertUser = async (req, res) => {
         email: req.body.email,
         mobile: req.body.mobile,
         password: securePass,
+        referId:Math.floor(Math.random() * 900000) + 100000,
         is_admin: 0,
         verified: 0,
         Blocked: false
       })
-      sendOtpVerificationMail(user, res)
+      sendOtpVerificationMail(user, res,refer)
       await user.save()
     }
   } catch (error) {
@@ -101,7 +103,7 @@ const insertUser = async (req, res) => {
 
 
 // send Otp to verification
-const sendOtpVerificationMail = async ({ email }, res) => {
+const sendOtpVerificationMail = async ({ email }, res,refer) => {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -117,7 +119,7 @@ const sendOtpVerificationMail = async ({ email }, res) => {
     // creating otp
     const otp = `${Math.floor(1000 + Math.random() * 9000
     )}`;
-
+console.log(otp);
 
     const emailOptions = {
       from: 'peeru548@gmail.com',
@@ -130,7 +132,7 @@ const sendOtpVerificationMail = async ({ email }, res) => {
 
     const newOtpVerification = await new userOtpVerification({ email: email, otp: hashedOtp })
     await newOtpVerification.save()
-    res.redirect(`/otp?email=${email}`);
+    res.redirect(`/otp?email=${email}&refer=${refer}`);
     await transporter.sendMail(emailOptions)
 
   } catch (error) {
@@ -142,8 +144,9 @@ const sendOtpVerificationMail = async ({ email }, res) => {
 // otp Loading
 const loadOtp = async (req, res) => {
   try {
+    const refer = req.query.refer
     const email = req.query.email
-    res.render('otp', { email: email })
+    res.render('otp', { email: email ,refer})
   } catch (error) {
     console.log(error.message);
   }
@@ -154,6 +157,10 @@ const loadOtp = async (req, res) => {
 // Otp verification
 const verifyOtp = async (req, res) => {
   try {
+    const refer = req.body.refer
+    const checkRefer = await User.findOne({referId:refer})
+    console.log(refer,"refer crct");
+    console.log(checkRefer,"checek refer crct");
     const email = req.body.email
     const otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
     const userVerification = await userOtpVerification.findOne({ email: email })
@@ -190,6 +197,25 @@ const verifyOtp = async (req, res) => {
           _id: user._id,
           name: user.name,
           email: user.email
+        }
+        if(refer&&checkRefer){
+          console.log("vannnuuu njn");
+         user.wallet= user.wallet +100
+          const data = {
+            amount: 100,
+            date: new Date()
+          }
+          user.walletHistory.push(data)
+          console.log('usergotmney');
+          user.save()
+        checkRefer.wallet =  checkRefer.wallet +200
+          const dataa = {
+            amount:200,
+            date:new Date()
+          }
+          checkRefer.walletHistory.push(dataa)
+          console.log('chckusergotmoney');
+          checkRefer.save()
         }
         res.redirect('/login')
       } else {
@@ -565,7 +591,15 @@ const loadCheckout = async (req, res) => {
   }
 }
 
-
+const loadWallet = async (req,res)=>{
+  try {
+    const userId = req.session.user._id
+    const user = await User.findById({_id:userId})
+    res.render('wallet',{user})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 module.exports = {
   insertUser,
@@ -590,5 +624,6 @@ module.exports = {
   removeAddress,
   loadCheckout,
   loadeditAddress,
-  editAddress
+  editAddress,
+  loadWallet
 }

@@ -245,7 +245,14 @@
                         errorDate.textContent = ''
                     },3000)
                     return false
-                }else if(damount.value.trim()==''){
+                }else if(edate.value<adate.value){
+                    errordamount.textContent = 'expiry date must be greater than activation date'
+                    setTimeout(()=>{
+                        errorDate.textContent = ''
+                    },3000)
+                    return false
+                }
+                else if(damount.value.trim()==''){
                     errordamount.textContent = 'fill the field'
                     setTimeout(()=>{
                         errorDate.textContent = ''

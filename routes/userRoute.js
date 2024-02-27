@@ -27,7 +27,7 @@ user_route.set('views', './view/users')
 
 user_route.get('/', userController.loadHome)
 
-user_route.get('/login', userController.loadLogin)
+user_route.get('/login',auth.login,userController.loadLogin)
 user_route.post('/login', userController.UserLogin)
 
 user_route.get('/logout', userController.logout)
@@ -79,11 +79,14 @@ user_route.get('/orderSuccess/:id', auth.isLogout, orderController.loadOrderSucc
 user_route.get('/orderDetails', auth.isLogout, orderController.orderDetails)
 user_route.get('/myOrders', auth.isLogout, orderController.loadMyOrder)
 user_route.post('/cancelOrder', auth.isLogout, orderController.cancelOrder)
+user_route.get('/singleOrder',auth.isLogout,orderController.singleOrder)
 
 user_route.get('/myCoupons',couponController.loadMyCoupon)
 user_route.post('/checkCoupon',couponController.checkCoupon)
 
 user_route.post('/returnRequest',orderController.returnRequest)
+
+user_route.get('/wallet',userController.loadWallet)
 
 module.exports = user_route;
 

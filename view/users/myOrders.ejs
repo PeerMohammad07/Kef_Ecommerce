@@ -131,8 +131,8 @@
               <div class="right-side ps-5 text-center">
                 <% order.products.forEach((product) => { %>
                   <div class="product-image pt-3">
-                    <img src="/assets/product/sharpedproduct/<%= product.productId.images[0] %>"
-                      alt="<%= product.name %> Image" style="height: 150px; width: 150px;">
+                  <a href="/singleOrder?productId=<%= product.productId._id %>&orderId=<%= order._id %>">  <img src="/assets/product/sharpedproduct/<%= product.productId.images[0] %>"
+                      alt="<%= product.name %> Image" style="height: 150px; width: 150px;"></a>
                   </div>
                   <div class="status-and-cancel">
                     <div class="status text-warning"><%= product.status %></div>

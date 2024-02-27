@@ -77,7 +77,7 @@ const addProductOffer = async (req,res)=>{
     const offerId = offer;
     const off = await Offer.findOne({_id:offerId})
     const currentDate = new Date()
-    if(off.expiryDate>currentDate){
+   
    await Product.findByIdAndUpdate(
       {_id:product},
       {
@@ -87,10 +87,7 @@ const addProductOffer = async (req,res)=>{
       }
     )
     res.json({success:true})
-    }else{
-      req.flash('expired','this offer expired')
-      res.redirect(`/admin/applyOffer?id=${offer}`)
-    }
+    
   } catch (error) {
     console.log(error.message);
   }

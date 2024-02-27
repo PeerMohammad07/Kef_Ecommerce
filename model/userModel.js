@@ -51,6 +51,9 @@ const userschema = new mongoose.Schema({
     type:Number,
     default:0
   },
+  referId:{
+    type:Number
+  },
   walletHistory :[
     {
       amount:{

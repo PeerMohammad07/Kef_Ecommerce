@@ -4,8 +4,29 @@ const Product = require('../model/productsModal');
 
 const loadCategory = async (req, res) => {
   try {
+    let page =1;
+    if(req.query.id){
+      page = req.query.id
+    }
+
+    const limit = 6;
+    let next = page + 1
+    const previous = page > 1? page - 1 :1
+
+    const count = await Category.find().count()
+
+    const totalPages = Math.ceil(count/limit)
+
+    if(next > totalPages){
+      next = totalPages
+    }
+
     const category = await Category.find()
-    res.render('category', { category })
+    .limit(limit)
+    .skip((page - 1) * limit)
+    .exec()
+
+    res.render('category', { category ,next,previous,totalPages})
   } catch (error) {
     console.log(error.message);
   }
@@ -23,19 +44,24 @@ const insertCategory = async (req, res) => {
 
   try {
     let { name, description } = req.body
+    const already = name.toLowerCase()
     const existCategory = await Category.findOne({ name: name })
     if (existCategory) {
       req.flash('error', 'already exists a category with this name')
       res.redirect('/admin/addCategory')
     } else {
-
-      const category = new Category({
+      if(already){
+        req.flash('error', 'already exists a category with this name')
+        res.redirect('/admin/addCategory') 
+      }else{
+        const category = new Category({
         name: req.body.name,
         description: req.body.description,
         isListed: false
       })
       await category.save()
       res.redirect('/admin/categories')
+      }
     }
   } catch (error) {
     console.log(error.messsage);
@@ -58,15 +84,20 @@ const editCategory = async (req, res) => {
   try {
     const { id, name, description } = req.body
     const newname = req.body.editname;
+    const alread = newname.toLowerCase()
     const newdescription = req.body.editdisc
     const already = await Category.findOne({ _id: { $ne: id }, name: newname })
     if (already) {
       req.flash('error', 'this name is already exist ')
       res.redirect('/admin/categories')
     } else {
-
-      await Category.findByIdAndUpdate({ _id: id }, { $set: { name: newname, description: newdescription } })
+      if(alread){
+        req.flash('error', 'this name is already exist ')
       res.redirect('/admin/categories')
+      }else{
+         await Category.findByIdAndUpdate({ _id: id }, { $set: { name: newname, description: newdescription } })
+      res.redirect('/admin/categories')
+      }
     }
   } catch (error) {
     console.log(error.message);

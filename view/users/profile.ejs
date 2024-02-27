@@ -16,6 +16,7 @@
           <li><a class="nav-link" href="/whishList">Whishlist</a></li>
           <li><a class="nav-link" href="/myOrders">My Orders</a></li>
           <li><a class="nav-link" href="/myCoupons">My Coupons</a></li>
+          <li><a class="nav-link" href="/wallet">Wallet</a></li>
         </ul>
 
         <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -106,7 +107,30 @@
       <div class="container py-5">
         <div class="container ">
           <div class="row">
-            <div>Wallet : ₹<%= user.wallet %></div>
+            <div class="col-6">Wallet : ₹<%= user.wallet %></div>
+            <div class="col-6">
+              <label for="referal" style="display: inline-block; margin-right: 10px;">Referal link:</label>
+              <input type="text" class="form-control"  value="localhost:3000/signup?refer=<%= user.referId %>" required id="referralLink" style="display: inline-block; width: 70%;" readonly>
+              
+                <button class="btn btn-primary " style="height: 40px;" onclick="copyReferralLink()">Copy</button>
+        
+              </div>
+              <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Include SweetAlert script -->
+              <script>
+                function copyReferralLink() {
+                  var referralLink = document.getElementById("referralLink");
+                  referralLink.select();
+                  document.execCommand("copy");
+                  
+                  // Display SweetAlert instead of standard alert
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Referral link copied!',
+                    text: 'The referral link has been copied to the clipboard.'
+                  });
+                }
+              </script>
+
             <div class="col-lg-12 ">
               <div class="card mb-4 col-lg-4 m-auto">
               </div>
@@ -373,6 +397,7 @@
     </footer>
 
 
+
     <!--change password modal start-->
     <div class="modal" id="changePasswordModal" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
@@ -507,6 +532,24 @@ function clearInputValues() {
 </script>
 
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var clipboardButtons = document.querySelectorAll(".copyButton");
+
+    clipboardButtons.forEach((button, i) => {
+      var clipboard = new ClipboardJS(button);
+
+      clipboard.on("success", function (e) {
+        button.innerText = "Copied";
+      });
+
+      clipboard.on("error", function (e) {
+        console.error("Error copying to clipboard: ", e);
+      });
+    });
+  });
+
+</script>
 
 
 

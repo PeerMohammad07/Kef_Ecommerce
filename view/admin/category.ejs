@@ -241,20 +241,39 @@
                                                         
 
                                                         <% })) %>
+                                                    </tbody>
+                                                </table>
                                                             <% } else{ %>
 
-                                            </tbody>
-                                        </table>
+                                    
+                                        <p>No users found in the database.</p>
+                                        <% } %>
                                     </div>
-
-                                    <p>No users found in the database.</p>
-                                    <% } %>
                                 </div>
                             </div>
                         </div>
             </div>
+            <div class="pagination-area mt-15 mb-50">
+                      <nav aria-label="Page navigation example">
+                          <ul class="pagination">
+                              <li class="page-item">
+                                  <a class="page-link" href="/admin/categories?id=<%= previous %>"><</a>
+                              </li>
+                              <% for(let i = 1; i<= totalPages ;i++){ %>
+                                  <li class="page-item">
+                                      <a class="page-link" href="/admin/categories?id=<%= i %>"><%=i %>
+                                      </a>
+                                  </li>
+                                  <%}%>
+                                      <li class="page-item">
+                                          <a class="page-link" href="/admin/categories?id=<%= next %>">></a>
+                                      </li>
+                          </ul>
+                      </nav>
+                  </div>
         </section>
-
+        
+      
         <!-- content-main end// -->
         <!-- <footer class="main-footer font-xs">
       <div class="row pb-30 pt-15">
@@ -270,7 +289,8 @@
       </div>
   </footer> -->
     </main>
-
+    
+  
     <script src="/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/js/vendors/select2.min.js"></script>

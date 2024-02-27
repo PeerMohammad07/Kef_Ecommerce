@@ -210,24 +210,50 @@ const loadShop = async (req, res) => {
   let products;
   let category = await Category.find({ isListed: false })
   try {
-    let sort = req.query.sort
+
+    let page = 1;
+    if (req.query.page) {
+      page = req.query.page
+    }
+    let next = page + 1
+    let previous = page > 1 ? page - 1 : 1
+    let limit = 8;
+
+    let count = await Product.find().count()
+
+    let totalPages = Math.ceil(count / limit)
+
+    if (next > totalPages) {
+      next = totalPages
+    }
+
     let id = req.query.id
-    if (req.query.id) {
-      products = await Product.find({ category: id, is_Listed: false }).populate("category").populate('offer')
-    } else if(sort=='priceLowTohigh'){
-      products = await Product.find({ is_Listed: false }).populate("category").sort({price:1}).populate('offer')
-    }else if(sort == 'pricehighToLow'){
-      products = await Product.find({ is_Listed: false }).populate("category").sort({price:-1}).populate('offer')
-    }else if(sort == 'name'){
-      products = await Product.find({ is_Listed: false }).populate("category").sort({name:1}).populate('offer')
+    if (req.query.id && !req.query.sort) {
+      products = await Product.find({ category: id, is_Listed: false }).populate("category").populate('offer').limit(limit).skip((page - 1) * limit).exec()
+    } else if (req.query.sort == 'priceLowTohigh' && !req.query.id) {
+      products = await Product.find({ is_Listed: false }).populate("category").sort({ price: 1 }).populate('offer').limit(limit).skip((page - 1) * limit).exec()
+    } else if (req.query.sort == 'pricehighToLow' && !req.query.id) {
+      products = await Product.find({ is_Listed: false }).populate("category").sort({ price: -1 }).populate('offer').limit(limit).skip((page - 1) * limit).exec()
+    } else if (req.query.sort == 'name' && !req.query.id) {
+      products = await Product.find({ is_Listed: false }).populate("category").sort({ name: 1 }).populate('offer').limit(limit).skip((page - 1) * limit).exec()
+    } else if (req.query.id && req.query.sort) {
+      if (req.query.sort == 'priceLowTohigh') {
+        console.log("i entered here");
+        products = await Product.find({ category: id, is_Listed: false }).populate("category").sort({ price: 1 }).populate('offer').limit(limit).skip((page - 1) * limit).exec()
+      } else if (req.query.sort == 'pricehighToLow') {
+        console.log("suiiii");
+        products = await Product.find({ category: id, is_Listed: false }).populate("category").sort({ price: -1 }).populate('offer').limit(limit).skip((page - 1) * limit).exec()
+      } else if (req.query.sort == 'name') {
+        products = await Product.find({ category: id, is_Listed: false }).populate("category").sort({ name: 1 }).populate('offer').limit(limit).skip((page - 1) * limit).exec()
+      }
     }
     else {
-      products = await Product.find({ is_Listed: false }).populate("category").populate('offer')
+      products = await Product.find({ is_Listed: false }).populate("category").populate('offer').limit(limit).skip((page - 1) * limit).exec()
     }
     const offers = await Offer.find({})
-    res.render('shop', { products, category ,offers})
+    res.render('shop', { products, category, offers, previous, next, totalPages })
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 }
 
@@ -253,13 +279,13 @@ const productView = async (req, res) => {
         const existsProduct = existscart.products.find((pro) => pro.productId.toString() === productId);
 
         if (existsProduct) {
-          return res.render('productDetails', { product, relatedProduct, inCart: true ,offers});
+          return res.render('productDetails', { product, relatedProduct, inCart: true, offers });
         }
       }
     }
 
 
-    res.render('productDetails', { product, relatedProduct, inCart: false ,offers});
+    res.render('productDetails', { product, relatedProduct, inCart: false, offers });
 
   } catch (error) {
     console.log(error.message);
@@ -267,14 +293,14 @@ const productView = async (req, res) => {
   }
 }
 
-const removeImage = async (req,res)=>{
+const removeImage = async (req, res) => {
   try {
-    const {image,productId} = req.body;
-    
-   const product = await Product.findOneAndUpdate({_id:productId},
-      {$pull:{images:image}}
-      )
+    const { image, productId } = req.body;
 
+    const product = await Product.findOneAndUpdate({ _id: productId },
+      { $pull: { images: image } }
+    )
+    res.json({ removed: true })
   } catch (error) {
     console.log(error.message);
   }

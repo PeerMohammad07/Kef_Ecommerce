@@ -2,8 +2,25 @@ const Banner = require('../model/bannerModal')
 
 const loadBanner = async (req,res)=>{
   try {
-    const banners = await Banner.find({})
-    res.render('banner',{banners})
+    let page = 1;
+    if(req.query.id){
+      page = req.query.id
+    }
+    let next = page+1
+    let previous = page>1?page-1:1
+    let limit = 6;
+
+    const count =  await Banner.find({}).count()
+
+    const totalPages = Math.ceil(count/limit)
+
+    if(next > totalPages){
+      next = totalPages
+    }
+
+
+    const banners = await Banner.find({}).limit(limit).skip((page -1)*limit).exec()
+    res.render('banner',{banners,next,previous,totalPages})
   } catch (error) {
     console.log(error.message);
   }

@@ -140,10 +140,12 @@
             </div>
         </header>
 
-
+<% const currentDate = new Date() %>
 
 <%if(locals.offers){%>
   <% offers.forEach((offer)=>{%>
+    <% if(offer.expiryDate>currentDate) { %> 
+
       <div class="card">
           <div class="card-body">
               <h2 class="card-title">Offer Name:<%=
@@ -172,6 +174,7 @@
             </div>
           </div>
       </div>
+      <%}%>
       <% }) %>
           <%}%>
        

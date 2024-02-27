@@ -1,0 +1,124 @@
+<%- include("../layouts/user/header.ejs") -%>
+<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark " arial-label="Furni navigation bar">
+
+	<div class="container">
+		<a class="navbar-brand" href="/">KEF<span>.</span></a>
+
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+<div class="collapse navbar-collapse" id="navbarsFurni">
+	<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+		<li class="nav-item ">
+			<a class="nav-link" href="/">Home</a>
+		</li>
+		<li><a class="nav-link" href="/shop">Shop</a></li>
+    <li></li>
+	</ul>
+
+	<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+		
+<%if(locals.user){ %>
+	<div class="dropdown show">
+		<a class="btn  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<img src="/static/images/user.svg">
+		</a>
+	
+		<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+			<a class="dropdown-item text-light" href="/logout">Logout</a>
+			<a class="dropdown-item text-light" href="/profile">Profile</a>
+			<!-- <a class="dropdown-item" href="#"></a> -->
+		</div>
+	</div>
+	<%} else{%>
+		<li><a class="nav-link" href="/login"><img src="/static/images/user.svg"></a></li>
+		<%}%>
+		<li><a class="nav-link" href="/cart"><img src="/static/images/cart.svg"></a></li>
+	</ul>
+</div>
+</div>	
+
+</nav>
+<style>
+  .body {
+      font-family: 'Arial', sans-serif;
+      margin: 20px;
+      padding: 0;
+      background-color: #f5f5f5;
+  }
+
+  .div {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+  }
+
+  h2 {
+      color: #333;
+  }
+
+  table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+  }
+
+  th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+  }
+
+  th {
+      background-color: #f2f2f2;
+  }
+
+  tbody tr:hover {
+      background-color: #f5f5f5;
+  }
+
+  span {
+      font-weight: bold;
+      color: #007bff;
+  }
+</style>
+</head>
+<div class="body">
+
+<div class="div">
+  <h2>Your Wallet History</h2>
+
+  <div>
+      <p>Total Wallet Amount: ₹<span id="totalAmount"><%= user.wallet %></span></p>
+  </div>
+
+  <table>
+      <thead>
+      
+            <tr>
+              <th>Date</th>
+              <th>Money</th>
+            </tr>
+          
+      </thead>
+      <tbody id="walletHistory">
+        <% if(user.walletHistory){ %>
+          <% user.walletHistory.map((walletHistory)=>{%>
+        <tr>
+          <td>
+            <%= walletHistory.date.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) %>
+          </td>
+          <td>
+            ₹<%= walletHistory.amount %>  
+          </td>
+        </tr>
+          <!-- Wallet history items will be dynamically added here -->
+          <%  })  %>
+        <%}%>
+      </tbody>
+  </table>
+</div>
+</div>
+<%- include('../layouts/user/footer.ejs') -%>

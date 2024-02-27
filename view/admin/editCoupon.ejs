@@ -151,7 +151,7 @@
                     <div class="col-12 col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="" method="post">
+                                <form action="" method="post" onsubmit="return validate()">
                                     <% if (messages.exists) { %>
                                         <div class="alert alert-danger d-flex align-items-center  " role="alert" id="error-alert">
                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
@@ -220,3 +220,44 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+        <script>
+            function validate(){
+                let damount = document.getElementById('damount')
+                let name = document.getElementById('name')
+                let edate = document.getElementById('edate')
+                let adate =  document.getElementById('adate')
+                let limit = document.getElementById('limit')
+                let errorName = document.getElementById('hideName')
+                let errorLimit = document.getElementById('hideLimit')
+                let errordamount = document.getElementById('hidedamount')
+                const nameRegex = /^[a-zA-Z\s]+$/;
+
+                if(name.value.trim()==''){
+                    errorName.textContent = 'fill the field'
+                    setTimeout(()=>{
+                    errorName.textContent = ''
+                    },3000)
+                    return false
+                }else if(limit.value.trim()==''){
+                    errorLimit.textContent = 'fill the field'
+                    setTimeout(()=>{
+                        errorDate.textContent = ''
+                    },3000)
+                    return false
+                }else if(edate.value<adate.value){
+                    errordamount.textContent = 'expiry date must be greater than activation date'
+                    setTimeout(()=>{
+                        errorDate.textContent = ''
+                    },3000)
+                    return false
+                }
+                else if(damount.value.trim()==''){
+                    errordamount.textContent = 'fill the field'
+                    setTimeout(()=>{
+                        errorDate.textContent = ''
+                    },3000)
+                    return false
+                }else{
+                    return true
+                }
+            }

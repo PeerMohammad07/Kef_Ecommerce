@@ -108,6 +108,7 @@
 								</div>
 							</div>
 					<%}%>
+					<input type="hidden" name="refer" value="<%= refer %>">
 							<span class="mobile-text">Enter the code we just sent to your Email <b class="text-danger"> <%= locals.email %> </b></span>
 							<div class="d-flex flex-row mt-5">
 									<input type="text" class="form-control" id="digit1" name="digit1" maxlength="1" oninput="moveToNext(this)" autofocus required>

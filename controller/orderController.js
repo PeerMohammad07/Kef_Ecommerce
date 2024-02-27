@@ -5,7 +5,7 @@ const Product = require('../model/productsModal')
 const Razorpay = require('razorpay');
 const product = require('../model/productsModal');
 const Coupon = require('../model/couponModal')
-const crypto = require('crypto')
+const crypto = require('crypto');
 
 var instance = new Razorpay({
   key_id: 'rzp_test_LoOWJkhlCEPQCp',
@@ -138,6 +138,9 @@ const orderDetails = async (req, res) => {
 const loadMyOrder = async (req, res) => {
   try {
     const userid = req.session.user._id
+
+     await Order.deleteMany({ status: 'pending', paymentMethod: 'razorpay' });
+
     const orders = await Order.find({ userId: userid }).populate('products.productId').sort({date:-1})
     res.render('myOrders', { orders })
   } catch (error) {
@@ -226,6 +229,22 @@ const returnRequest = async(req,res)=>{
   }
 }
 
+const singleOrder = async (req,res)=>{
+  try {
+    const orderId = req.query.orderId
+    const productId = req.query.productId
+
+    const order = await Order.findOne({_id:orderId})
+    const product = await Order.findOne({'products.productId': productId}).populate('products.productId');
+    console.log(product);
+        res.render('singleOrder',{order,product})
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 module.exports = {
   placeOrder,
   loadOrderSuccess,
@@ -233,5 +252,6 @@ module.exports = {
   loadMyOrder,
   cancelOrder,
   verifyPayment,
-  returnRequest
+  returnRequest,
+  singleOrder
 }

@@ -7,7 +7,6 @@ const Offer = require('../model/offerModal')
 
 const addToCart = async (req, res) => {
   try {
-    console.log(req.session.user);
     if (!req.session.user || !req.session.user._id) {
       return res.json({ login: true, message: 'please login and continuing shopiing' })
     } else {
@@ -17,17 +16,20 @@ const addToCart = async (req, res) => {
       const cart = await Cart.findOne({ userId: userid })
       let productPrice;
       if(product.offer&&!product.category.offer){
+        console.log("product offer only in while add to car");
         // product offer ondenkil
         productPrice = Math.floor( product.price - (product.price * product.offer.offerPercentage /100))
       }else if(product.category.offer&&!product.offer){
+        console.log("cate offer only in while add to car");
         // category offer ondenkil
         const offer = await Offer.findById({_id:product.category.offer})
         productPrice = Math.floor( product.price - (product.price * offer.offerPercentage /100))
       }else if(product.category.offer&&product.offer){
         // productum category offer ndenkilum
-        if(product.offer.offerPercentage>=product.category.offer.offerPercentage){
+        const offer = await Offer.findById({_id:product.category.offer})
+        if(product.offer.offerPercentage>=offer.offerPercentage){
           productPrice = Math.floor( product.price - (product.price * product.offer.offerPercentage /100))
-        }else if(product.category.offer.offerPercentage>product.offer.offerPercentage){
+        }else if(offer.offerPercentage>product.offer.offerPercentage){
           const offer = await Offer.findById({_id:product.category.offer})
           productPrice = Math.floor( product.price - (product.price * offer.offerPercentage /100))
         }
@@ -114,7 +116,7 @@ const removeCart = async (req, res) => {
 
 const updateQuantity = async (req, res) => {
   const { productId, count } = req.body;
-  const product = await Product.findOne({ _id: productId }).populate('category')
+  const product = await Product.findOne({ _id: productId }).populate('category').populate('offer')
   const userid = req.session.user._id;
   const cart = await Cart.findOne({ userId: userid })
   if (count == -1) {
@@ -144,9 +146,10 @@ const updateQuantity = async (req, res) => {
     productPrice = Math.floor( product.price - (product.price * offer.offerPercentage /100))
   }else if(product.category.offer&&product.offer){
     // productum category offer ndenkilum
-    if(product.offer.offerPercentage>=product.category.offer.offerPercentage){
-      productPrice = Math.floor( product.price - (product.price * product.offer.offerPercentage /100))
-    }else if(product.category.offer.offerPercentage>product.offer.offerPercentage){
+    const offer = await Offer.findById({_id:product.category.offer})
+    if(product.offer.offerPercentage>= offer.offerPercentage){
+      productPrice = Math.floor( product.price - (product.price * offer.offerPercentage /100))
+    }else if(offer.offerPercentage>product.offer.offerPercentage){
       const offer = await Offer.findById({_id:product.category.offer})
       productPrice = Math.floor( product.price - (product.price * offer.offerPercentage /100))
     }
