@@ -12,7 +12,6 @@ app.use(nocache())
 
 const flash = require("express-flash")
 app.use(flash())
-
 const path = require('path')
 app.use('/static', express.static(path.join(__dirname, 'public/assets')));
 app.use('/assets', express.static(path.join(__dirname, 'public/assets/images')));

@@ -159,14 +159,12 @@ const verifyOtp = async (req, res) => {
   try {
     const refer = req.body.refer
     const checkRefer = await User.findOne({referId:refer})
-    console.log(refer,"refer crct");
-    console.log(checkRefer,"checek refer crct");
     const email = req.body.email
     const otp = req.body.digit1 + req.body.digit2 + req.body.digit3 + req.body.digit4;
     const userVerification = await userOtpVerification.findOne({ email: email })
 
     if (!userVerification) {
-      req.flash('message', 'User verification data not found');
+      req.flash('expire', 'Otp expired');
       res.redirect(`/otp?email=${email}`);
       return;
 
@@ -223,9 +221,10 @@ const verifyOtp = async (req, res) => {
         req.flash('blocked', 'you are blocked from this contact with admin');
         res.redirect(`/otp?email=${email}`)
       }
-    } else {
-      req.flash('incorrect', 'otp is incorrect');
-      res.redirect(`/otp?email=${email}`)
+    }
+     else {
+      // req.flash('incorrect', 'otp is incorrect');
+      // res.redirect(`/otp?email=${email}`)
       console.log("otp incorrect else worked")
     }
   }

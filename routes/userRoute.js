@@ -32,7 +32,7 @@ user_route.post('/login', userController.UserLogin)
 
 user_route.get('/logout', userController.logout)
 
-user_route.get('/otp', userController.loadOtp)
+user_route.get('/otp',auth.login, userController.loadOtp)
 user_route.post('/otp', userController.verifyOtp)
 
 user_route.get('/signup', userController.loadSignup)
